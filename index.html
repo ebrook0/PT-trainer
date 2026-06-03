@@ -6,17 +6,18 @@
 <title>PT Trainer — European Portuguese</title>
 <style>
   :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface2: #23273a;
-    --border: #2e3347;
-    --accent: #4f8ef7;
-    --accent2: #7c5cfc;
-    --text: #e8eaf0;
-    --muted: #7a7f9a;
-    --green: #3ecf8e;
-    --red: #f66;
-    --yellow: #f7c948;
+    --bg:       #f0fdf4;
+    --surface:  #ffffff;
+    --surface2: #f7fef9;
+    --border:   #d1fae5;
+    --accent:   #16a34a;
+    --accent2:  #059669;
+    --text:     #1e293b;
+    --muted:    #64748b;
+    --red:      #ef4444;
+    --yellow:   #f59e0b;
+    --shadow:   0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.05);
+    --shadow-lg:0 4px 16px rgba(22,163,74,.12);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -24,7 +25,7 @@
   body {
     background: var(--bg);
     color: var(--text);
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -37,17 +38,23 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    box-shadow: var(--shadow);
   }
 
-  header h1 { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+  header h1 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+  }
 
-  header span {
-    font-size: 0.8rem;
+  header .badge {
+    font-size: 0.75rem;
     color: var(--muted);
-    background: var(--surface2);
+    background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 2px 8px;
+    border-radius: 20px;
+    padding: 2px 10px;
   }
 
   nav {
@@ -55,7 +62,7 @@
     border-bottom: 1px solid var(--border);
     padding: 0 32px;
     display: flex;
-    gap: 4px;
+    gap: 2px;
   }
 
   nav button {
@@ -65,16 +72,16 @@
     color: var(--muted);
     cursor: pointer;
     font-size: 0.875rem;
-    padding: 12px 16px;
+    font-weight: 500;
+    padding: 13px 18px;
     transition: color 0.15s, border-color 0.15s;
   }
-
   nav button:hover { color: var(--text); }
   nav button.active { color: var(--accent); border-bottom-color: var(--accent); }
 
   main {
     flex: 1;
-    padding: 40px 32px;
+    padding: 36px 32px;
     max-width: 900px;
     margin: 0 auto;
     width: 100%;
@@ -87,32 +94,34 @@
   .card-controls {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 32px;
+    gap: 10px;
+    margin-bottom: 28px;
     flex-wrap: wrap;
   }
 
-  .toggle-lang {
-    background: var(--surface2);
+  .mode-btn {
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
     color: var(--text);
     cursor: pointer;
-    font-size: 0.8rem;
-    padding: 8px 16px;
-    transition: border-color 0.15s;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 7px 14px;
+    transition: all 0.15s;
+    box-shadow: var(--shadow);
   }
-  .toggle-lang:hover { border-color: var(--accent); }
+  .mode-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .mode-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
-  .lang-indicator { font-size: 0.8rem; color: var(--muted); }
-  .card-counter { margin-left: auto; font-size: 0.8rem; color: var(--muted); }
+  .card-counter { margin-left: auto; font-size: 0.78rem; color: var(--muted); }
 
   .card-scene {
     perspective: 1200px;
     width: 100%;
     height: 280px;
     cursor: pointer;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
 
   .card-inner {
@@ -120,43 +129,45 @@
     height: 100%;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.55s cubic-bezier(0.4,0,0.2,1);
+    transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
   }
-
   .card-inner.flipped { transform: rotateY(180deg); }
 
   .card-face {
     position: absolute;
     inset: 0;
     backface-visibility: hidden;
-    border-radius: 16px;
+    border-radius: 18px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 10px;
     padding: 32px;
-    border: 1px solid var(--border);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow-lg);
   }
 
   .card-front { background: var(--surface); }
 
   .card-back {
-    background: linear-gradient(135deg, var(--surface) 0%, #1e2236 100%);
+    background: linear-gradient(145deg, #f0fdf4 0%, #dcfce7 100%);
     transform: rotateY(180deg);
     border-color: var(--accent2);
   }
 
   .card-label {
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
+    font-weight: 600;
   }
 
   /* register badge */
   .register-badge {
     font-size: 0.68rem;
+    font-weight: 600;
     padding: 2px 10px;
     border-radius: 20px;
     letter-spacing: 0.02em;
@@ -164,41 +175,44 @@
   }
   .register-badge.show { display: inline-block; }
   .register-badge.informal {
-    background: rgba(62, 207, 142, 0.12);
-    color: #3ecf8e;
-    border: 1px solid rgba(62, 207, 142, 0.3);
+    background: rgba(245,158,11,.1);
+    color: #d97706;
+    border: 1px solid rgba(245,158,11,.3);
   }
   .register-badge.formal {
-    background: rgba(167, 139, 250, 0.12);
-    color: #a78bfa;
-    border: 1px solid rgba(167, 139, 250, 0.3);
+    background: rgba(79,70,229,.08);
+    color: #4f46e5;
+    border: 1px solid rgba(79,70,229,.25);
   }
 
   .card-word {
-    font-size: 1.9rem;
-    font-weight: 600;
+    font-size: 1.85rem;
+    font-weight: 700;
     text-align: center;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: var(--text);
   }
-
   .card-back .card-word { color: var(--accent); }
-  .card-hint { font-size: 0.8rem; color: var(--muted); text-align: center; }
+
+  .card-hint { font-size: 0.78rem; color: var(--muted); }
 
   .card-category {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     padding: 3px 10px;
     border-radius: 20px;
-    background: var(--surface2);
+    background: var(--bg);
     border: 1px solid var(--border);
     color: var(--muted);
     position: absolute;
-    top: 16px;
-    right: 16px;
+    top: 14px;
+    right: 14px;
+    font-weight: 500;
   }
 
   .difficulty-dot {
     position: absolute;
-    top: 16px;
+    top: 18px;
     left: 16px;
     width: 8px;
     height: 8px;
@@ -207,13 +221,12 @@
 
   .save-btn {
     position: absolute;
-    bottom: 14px;
-    right: 16px;
+    bottom: 12px;
+    right: 14px;
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.2rem;
-    line-height: 1;
+    font-size: 1.15rem;
     color: var(--muted);
     transition: color 0.15s, transform 0.15s;
     padding: 4px;
@@ -224,52 +237,61 @@
 
   .card-nav {
     display: flex;
-    gap: 12px;
+    gap: 10px;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
   }
 
   .btn {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
     color: var(--text);
     cursor: pointer;
     font-size: 0.875rem;
-    padding: 10px 24px;
-    transition: background 0.15s, border-color 0.15s;
+    font-weight: 500;
+    padding: 10px 22px;
+    transition: all 0.15s;
+    box-shadow: var(--shadow);
   }
-  .btn:hover { background: var(--border); }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .btn-primary:hover { filter: brightness(1.1); }
-  .btn-icon { padding: 10px 16px; font-size: 1.1rem; }
-  .btn-saved { border-color: var(--yellow); color: var(--yellow); }
-  .btn-saved.active-filter { background: var(--yellow); color: #111; }
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { filter: brightness(1.08); border-color: var(--accent); color: #fff; }
+
+  .btn-icon { padding: 10px 15px; font-size: 1rem; }
+
+  .btn-saved { border-color: #fde68a; color: #d97706; background: #fffbeb; }
+  .btn-saved.active-filter { background: var(--yellow); border-color: var(--yellow); color: #fff; }
 
   /* saved panel */
   .saved-panel {
-    margin-top: 28px;
+    margin-top: 24px;
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
     overflow: hidden;
     display: none;
+    box-shadow: var(--shadow);
   }
   .saved-panel.open { display: block; }
 
   .saved-panel-header {
-    background: var(--surface2);
+    background: var(--bg);
     border-bottom: 1px solid var(--border);
-    padding: 12px 16px;
+    padding: 11px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     font-weight: 600;
+    color: var(--text);
   }
-
   .saved-panel-header button {
     background: none;
     border: none;
@@ -278,36 +300,33 @@
     font-size: 0.75rem;
   }
 
-  .saved-list {
-    list-style: none;
-    max-height: 280px;
-    overflow-y: auto;
-  }
+  .saved-list { list-style: none; max-height: 260px; overflow-y: auto; }
 
   .saved-list li {
     display: flex;
     align-items: center;
-    padding: 10px 16px;
+    padding: 9px 16px;
     border-bottom: 1px solid var(--border);
-    font-size: 0.85rem;
+    font-size: 0.83rem;
     gap: 10px;
     cursor: pointer;
     transition: background 0.1s;
   }
-  .saved-list li:hover { background: var(--surface2); }
+  .saved-list li:hover { background: var(--bg); }
   .saved-list li:last-child { border-bottom: none; }
 
   .saved-en { color: var(--muted); flex: 1; }
-  .saved-pt { color: var(--accent); flex: 1; }
+  .saved-pt { color: var(--accent); flex: 1; font-weight: 500; }
 
   .saved-reg {
-    font-size: 0.65rem;
+    font-size: 0.63rem;
+    font-weight: 600;
     padding: 1px 6px;
     border-radius: 10px;
     flex-shrink: 0;
   }
-  .saved-reg.informal { color: #3ecf8e; border: 1px solid rgba(62,207,142,0.3); }
-  .saved-reg.formal   { color: #a78bfa; border: 1px solid rgba(167,139,250,0.3); }
+  .saved-reg.informal { color: #d97706; border: 1px solid rgba(245,158,11,.3); }
+  .saved-reg.formal   { color: #4f46e5; border: 1px solid rgba(79,70,229,.25); }
 
   .remove-saved {
     background: none;
@@ -317,143 +336,148 @@
     font-size: 1rem;
     flex-shrink: 0;
     transition: color 0.15s;
+    line-height: 1;
   }
   .remove-saved:hover { color: var(--red); }
 
-  .saved-empty {
-    padding: 24px;
-    text-align: center;
-    color: var(--muted);
-    font-size: 0.85rem;
-  }
+  .saved-empty { padding: 22px; text-align: center; color: var(--muted); font-size: 0.83rem; }
 
   /* ── VERB TENSES ── */
   .tense-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 18px;
   }
 
   .tense-card {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
     overflow: hidden;
+    box-shadow: var(--shadow);
   }
 
   .tense-card h3 {
-    background: var(--surface2);
+    background: var(--bg);
     border-bottom: 1px solid var(--border);
-    font-size: 0.875rem;
+    font-size: 0.85rem;
+    font-weight: 600;
     padding: 12px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: var(--text);
   }
-
   .tense-card h3 em {
     font-style: normal;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     color: var(--muted);
     font-weight: 400;
   }
 
-  .tense-body { padding: 16px; }
+  .tense-body { padding: 14px 16px; }
 
-  .conj-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-  .conj-table td { padding: 5px 8px; }
-  .conj-table td:first-child { color: var(--muted); font-size: 0.78rem; width: 80px; }
-  .conj-table td:last-child { color: var(--accent); font-weight: 500; }
+  .conj-table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+  .conj-table td { padding: 4px 8px; }
+  .conj-table td:first-child { color: var(--muted); font-size: 0.76rem; width: 76px; }
+  .conj-table td:last-child { color: var(--accent); font-weight: 600; }
 
   .tense-example {
-    margin-top: 12px;
-    font-size: 0.78rem;
+    margin-top: 10px;
+    font-size: 0.76rem;
     color: var(--muted);
     border-top: 1px solid var(--border);
-    padding-top: 10px;
+    padding-top: 9px;
     font-style: italic;
+    line-height: 1.5;
   }
-  .tense-example strong { color: var(--text); font-style: normal; font-weight: 400; }
+  .tense-example strong { color: var(--text); font-style: normal; font-weight: 500; }
 
   /* ── IRREGULAR VERBS ── */
-  .irr-search { margin-bottom: 24px; }
+  .irr-search { margin-bottom: 20px; }
 
   .irr-search input {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
     color: var(--text);
     font-size: 0.9rem;
     padding: 10px 16px;
     width: 100%;
     outline: none;
     transition: border-color 0.15s;
+    box-shadow: var(--shadow);
   }
   .irr-search input:focus { border-color: var(--accent); }
   .irr-search input::placeholder { color: var(--muted); }
 
-  .verb-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+  .verb-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
 
   .verb-tab {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
     color: var(--muted);
     cursor: pointer;
     font-size: 0.8rem;
+    font-weight: 500;
     padding: 6px 14px;
     transition: all 0.15s;
+    box-shadow: var(--shadow);
   }
-  .verb-tab:hover, .verb-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .verb-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .verb-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
   .verb-block {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
     overflow: hidden;
     display: none;
+    box-shadow: var(--shadow);
   }
   .verb-block.visible { display: block; }
 
   .verb-header {
-    background: var(--surface2);
+    background: var(--bg);
     border-bottom: 1px solid var(--border);
     padding: 14px 20px;
     display: flex;
     align-items: baseline;
     gap: 12px;
   }
-  .verb-header h2 { font-size: 1.3rem; }
+  .verb-header h2 { font-size: 1.3rem; color: var(--accent); font-weight: 700; }
   .verb-header span { color: var(--muted); font-size: 0.85rem; }
 
   .verb-tenses-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 0;
   }
 
   .verb-tense-col {
-    padding: 16px 20px;
+    padding: 14px 18px;
     border-right: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
   }
   .verb-tense-col h4 {
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.07em;
     color: var(--muted);
     margin-bottom: 10px;
+    font-weight: 600;
   }
-  .verb-tense-col .forms { display: flex; flex-direction: column; gap: 4px; font-size: 0.85rem; }
-  .verb-tense-col .forms span { color: var(--accent); }
-  .verb-tense-col .forms em { font-style: normal; color: var(--muted); font-size: 0.75rem; margin-right: 6px; }
+  .verb-tense-col .forms { display: flex; flex-direction: column; gap: 4px; font-size: 0.83rem; }
+  .verb-tense-col .forms span { color: var(--accent); font-weight: 600; }
+  .verb-tense-col .forms em { font-style: normal; color: var(--muted); font-size: 0.73rem; margin-right: 6px; }
 
   @media (max-width: 600px) {
-    main { padding: 24px 16px; }
-    nav { padding: 0 16px; }
-    header { padding: 14px 16px; }
+    main { padding: 20px 14px; }
+    nav { padding: 0 14px; }
+    header { padding: 12px 16px; }
     .card-word { font-size: 1.4rem; }
     .tense-grid { grid-template-columns: 1fr; }
+    .card-scene { height: 250px; }
   }
 </style>
 </head>
@@ -461,7 +485,7 @@
 
 <header>
   <h1>PT Trainer</h1>
-  <span>European Portuguese</span>
+  <span class="badge">European Portuguese</span>
 </header>
 
 <nav>
@@ -475,8 +499,10 @@
   <!-- FLASHCARDS -->
   <section id="flashcards" class="section active">
     <div class="card-controls">
-      <button class="toggle-lang" onclick="toggleLang()">&#8644; Flip Language</button>
-      <span class="lang-indicator" id="langIndicator">Prompt: English &#8594; Portuguese</span>
+      <span style="font-size:.78rem;color:var(--muted);font-weight:500">Direction:</span>
+      <button class="mode-btn active" id="modeRandom" onclick="setMode('random',this)">Random</button>
+      <button class="mode-btn" id="modeEN"     onclick="setMode('en',this)">EN &#8594; PT</button>
+      <button class="mode-btn" id="modePT"     onclick="setMode('pt',this)">PT &#8594; EN</button>
       <span class="card-counter" id="cardCounter">Card 1</span>
     </div>
 
@@ -502,7 +528,7 @@
     <div class="card-nav">
       <button class="btn btn-icon" onclick="prevCard()">&#8592;</button>
       <button class="btn btn-primary" onclick="nextCard()">Next card</button>
-      <button class="btn btn-icon" onclick="shuffleCards()">&#8652;</button>
+      <button class="btn btn-icon" onclick="shuffleCards()" title="Reshuffle">&#8652;</button>
       <button class="btn btn-saved" id="savedToggleBtn" onclick="toggleSavedPanel()">&#9733; Saved (<span id="savedCount">0</span>)</button>
     </div>
 
@@ -523,7 +549,7 @@
   <!-- IRREGULAR VERBS -->
   <section id="irregular" class="section">
     <div class="irr-search">
-      <input type="text" placeholder="Search verb&#8230;" oninput="filterVerbs(this.value)" id="verbSearch">
+      <input type="text" placeholder="Search verb&#8230;" oninput="filterVerbs(this.value)">
     </div>
     <div class="verb-tabs" id="verbTabs"></div>
     <div id="verbBlocks"></div>
@@ -533,202 +559,269 @@
 
 <script>
 // ── CARD DATA ──
-// register: 'informal' = tu form, 'formal' = você form, omitted = neutral
+// register: 'informal'=tu, 'formal'=você, omitted=neutral
 const cards = [
-  // Greetings / Essentials — neutral
-  { en: "Hello", pt: "Olá", cat: "Greetings", diff: 1 },
-  { en: "Good morning", pt: "Bom dia", cat: "Greetings", diff: 1 },
-  { en: "Good afternoon", pt: "Boa tarde", cat: "Greetings", diff: 1 },
-  { en: "Good evening / Good night", pt: "Boa noite", cat: "Greetings", diff: 1 },
-  { en: "Please", pt: "Por favor / Se faz favor", cat: "Essentials", diff: 1 },
-  { en: "Thank you", pt: "Obrigado (m) / Obrigada (f)", cat: "Essentials", diff: 1 },
-  { en: "You're welcome", pt: "De nada", cat: "Essentials", diff: 1 },
-  { en: "Excuse me", pt: "Com licença", cat: "Essentials", diff: 1 },
-  { en: "Sorry (informal)", pt: "Desculpa", cat: "Essentials", diff: 1, register: 'informal' },
-  { en: "Sorry (formal)", pt: "Desculpe", cat: "Essentials", diff: 1, register: 'formal' },
-  { en: "Yes", pt: "Sim", cat: "Essentials", diff: 1 },
-  { en: "No", pt: "Não", cat: "Essentials", diff: 1 },
+  // Greetings & Essentials
+  { en:"Hello",                      pt:"Olá",                             cat:"Greetings",    diff:1 },
+  { en:"Good morning",               pt:"Bom dia",                         cat:"Greetings",    diff:1 },
+  { en:"Good afternoon",             pt:"Boa tarde",                       cat:"Greetings",    diff:1 },
+  { en:"Good evening / Good night",  pt:"Boa noite",                       cat:"Greetings",    diff:1 },
+  { en:"Please",                     pt:"Por favor / Se faz favor",        cat:"Essentials",   diff:1 },
+  { en:"Thank you",                  pt:"Obrigado (m) / Obrigada (f)",     cat:"Essentials",   diff:1 },
+  { en:"You're welcome",             pt:"De nada",                         cat:"Essentials",   diff:1 },
+  { en:"Excuse me",                  pt:"Com licença",                     cat:"Essentials",   diff:1 },
+  { en:"Sorry",                      pt:"Desculpa",                        cat:"Essentials",   diff:1, register:"informal" },
+  { en:"Sorry",                      pt:"Desculpe",                        cat:"Essentials",   diff:1, register:"formal" },
+  { en:"Yes",                        pt:"Sim",                             cat:"Essentials",   diff:1 },
+  { en:"No",                         pt:"Não",                             cat:"Essentials",   diff:1 },
 
-  // Introductions — split formal / informal
-  { en: "My name is…", pt: "Chamo-me… / O meu nome é…", cat: "Introductions", diff: 1 },
-  { en: "What is your name?", pt: "Como te chamas?", cat: "Introductions", diff: 1, register: 'informal' },
-  { en: "What is your name?", pt: "Como se chama?", cat: "Introductions", diff: 1, register: 'formal' },
-  { en: "How are you?", pt: "Como estás?", cat: "Introductions", diff: 1, register: 'informal' },
-  { en: "How are you?", pt: "Como está?", cat: "Introductions", diff: 1, register: 'formal' },
-  { en: "I am fine", pt: "Estou bem", cat: "Introductions", diff: 1 },
-  { en: "Where are you from?", pt: "De onde és?", cat: "Introductions", diff: 1, register: 'informal' },
-  { en: "Where are you from?", pt: "De onde é?", cat: "Introductions", diff: 1, register: 'formal' },
-  { en: "I am from England", pt: "Sou de Inglaterra", cat: "Introductions", diff: 1 },
+  // Introductions — formal / informal split
+  { en:"My name is…",                pt:"Chamo-me… / O meu nome é…",      cat:"Introductions",diff:1 },
+  { en:"What is your name?",         pt:"Como te chamas?",                 cat:"Introductions",diff:1, register:"informal" },
+  { en:"What is your name?",         pt:"Como se chama?",                  cat:"Introductions",diff:1, register:"formal" },
+  { en:"How are you?",               pt:"Como estás?",                     cat:"Introductions",diff:1, register:"informal" },
+  { en:"How are you?",               pt:"Como está?",                      cat:"Introductions",diff:1, register:"formal" },
+  { en:"I am fine, thanks",          pt:"Estou bem, obrigado/a",           cat:"Introductions",diff:1 },
+  { en:"Where are you from?",        pt:"De onde és?",                     cat:"Introductions",diff:1, register:"informal" },
+  { en:"Where are you from?",        pt:"De onde é?",                      cat:"Introductions",diff:1, register:"formal" },
+  { en:"I am from England",          pt:"Sou de Inglaterra",               cat:"Introductions",diff:1 },
+  { en:"Nice to meet you",           pt:"Muito prazer / Prazer em conhecer-te", cat:"Introductions",diff:1 },
 
-  // Food & Drink — neutral
-  { en: "Water", pt: "Água", cat: "Food & Drink", diff: 1 },
-  { en: "Coffee", pt: "Café", cat: "Food & Drink", diff: 1 },
-  { en: "Bread", pt: "Pão", cat: "Food & Drink", diff: 1 },
-  { en: "The bill, please", pt: "A conta, se faz favor", cat: "Food & Drink", diff: 1 },
-  { en: "I would like…", pt: "Queria…", cat: "Food & Drink", diff: 1 },
-  { en: "A white coffee", pt: "Um galão / Uma meia de leite", cat: "Food & Drink", diff: 2 },
+  // Communication — formal / informal split
+  { en:"I don't understand",         pt:"Não percebo / Não entendo",       cat:"Communication",diff:2 },
+  { en:"Could you speak more slowly?",pt:"Podes falar mais devagar?",      cat:"Communication",diff:2, register:"informal" },
+  { en:"Could you speak more slowly?",pt:"Pode falar mais devagar?",       cat:"Communication",diff:2, register:"formal" },
+  { en:"Can you repeat that?",       pt:"Podes repetir?",                  cat:"Communication",diff:2, register:"informal" },
+  { en:"Can you repeat that?",       pt:"Pode repetir?",                   cat:"Communication",diff:2, register:"formal" },
+  { en:"Do you speak English?",      pt:"Falas inglês?",                   cat:"Communication",diff:2, register:"informal" },
+  { en:"Do you speak English?",      pt:"Fala inglês?",                    cat:"Communication",diff:2, register:"formal" },
+  { en:"I don't speak Portuguese well", pt:"Não falo bem português",       cat:"Communication",diff:2 },
+  { en:"What does this mean?",       pt:"O que significa isto?",           cat:"Communication",diff:2 },
 
-  // Shopping / Navigation — split formal / informal for directions
-  { en: "How much does it cost?", pt: "Quanto custa?", cat: "Shopping", diff: 1 },
-  { en: "Where is the bathroom?", pt: "Onde é a casa de banho?", cat: "Navigation", diff: 1 },
-  { en: "Turn left", pt: "Vira à esquerda", cat: "Navigation", diff: 1, register: 'informal' },
-  { en: "Turn left", pt: "Vire à esquerda", cat: "Navigation", diff: 1, register: 'formal' },
-  { en: "Turn right", pt: "Vira à direita", cat: "Navigation", diff: 1, register: 'informal' },
-  { en: "Turn right", pt: "Vire à direita", cat: "Navigation", diff: 1, register: 'formal' },
-  { en: "Straight ahead", pt: "Em frente / Sempre em frente", cat: "Navigation", diff: 1 },
+  // Numbers
+  { en:"One",        pt:"Um / Uma",     cat:"Numbers",diff:1 },
+  { en:"Two",        pt:"Dois / Duas",  cat:"Numbers",diff:1 },
+  { en:"Three",      pt:"Três",         cat:"Numbers",diff:1 },
+  { en:"Four",       pt:"Quatro",       cat:"Numbers",diff:1 },
+  { en:"Five",       pt:"Cinco",        cat:"Numbers",diff:1 },
+  { en:"Six",        pt:"Seis",         cat:"Numbers",diff:1 },
+  { en:"Seven",      pt:"Sete",         cat:"Numbers",diff:1 },
+  { en:"Eight",      pt:"Oito",         cat:"Numbers",diff:1 },
+  { en:"Nine",       pt:"Nove",         cat:"Numbers",diff:1 },
+  { en:"Ten",        pt:"Dez",          cat:"Numbers",diff:1 },
+  { en:"Twenty",     pt:"Vinte",        cat:"Numbers",diff:1 },
+  { en:"One hundred",pt:"Cem / Cento",  cat:"Numbers",diff:1 },
 
-  // Transport — neutral
-  { en: "The train station", pt: "A estação de comboio", cat: "Transport", diff: 2 },
-  { en: "A return ticket", pt: "Um bilhete de ida e volta", cat: "Transport", diff: 2 },
+  // Days & Time
+  { en:"Monday",    pt:"Segunda-feira", cat:"Days",diff:1 },
+  { en:"Tuesday",   pt:"Terça-feira",   cat:"Days",diff:1 },
+  { en:"Wednesday", pt:"Quarta-feira",  cat:"Days",diff:1 },
+  { en:"Thursday",  pt:"Quinta-feira",  cat:"Days",diff:1 },
+  { en:"Friday",    pt:"Sexta-feira",   cat:"Days",diff:1 },
+  { en:"Saturday",  pt:"Sábado",        cat:"Days",diff:1 },
+  { en:"Sunday",    pt:"Domingo",       cat:"Days",diff:1 },
+  { en:"Today",     pt:"Hoje",          cat:"Time",diff:1 },
+  { en:"Tomorrow",  pt:"Amanhã",        cat:"Time",diff:1 },
+  { en:"Yesterday", pt:"Ontem",         cat:"Time",diff:1 },
+  { en:"Weekend",   pt:"Fim de semana", cat:"Time",diff:1 },
+  { en:"What time is it?", pt:"Que horas são?", cat:"Time",diff:2 },
 
-  // Numbers / Time / Days — neutral
-  { en: "One", pt: "Um / Uma", cat: "Numbers", diff: 1 },
-  { en: "Two", pt: "Dois / Duas", cat: "Numbers", diff: 1 },
-  { en: "Three", pt: "Três", cat: "Numbers", diff: 1 },
-  { en: "Ten", pt: "Dez", cat: "Numbers", diff: 1 },
-  { en: "One hundred", pt: "Cem / Cento", cat: "Numbers", diff: 1 },
-  { en: "Today", pt: "Hoje", cat: "Time", diff: 1 },
-  { en: "Tomorrow", pt: "Amanhã", cat: "Time", diff: 1 },
-  { en: "Yesterday", pt: "Ontem", cat: "Time", diff: 1 },
-  { en: "Monday", pt: "Segunda-feira", cat: "Days", diff: 1 },
-  { en: "Weekend", pt: "Fim de semana", cat: "Days", diff: 1 },
+  // Food & Drink
+  { en:"Water",       pt:"Água",         cat:"Food & Drink",diff:1 },
+  { en:"Coffee",      pt:"Café",         cat:"Food & Drink",diff:1 },
+  { en:"Milk",        pt:"Leite",        cat:"Food & Drink",diff:1 },
+  { en:"Beer",        pt:"Cerveja",      cat:"Food & Drink",diff:1 },
+  { en:"Wine",        pt:"Vinho",        cat:"Food & Drink",diff:1 },
+  { en:"Juice",       pt:"Sumo",         cat:"Food & Drink",diff:1 },
+  { en:"A coffee with milk (tall)",    pt:"Um galão",         cat:"Food & Drink",diff:2 },
+  { en:"A small strong black coffee",  pt:"Uma bica / Um café",cat:"Food & Drink",diff:2 },
+  { en:"Bread",       pt:"Pão",          cat:"Food & Drink",diff:1 },
+  { en:"Cheese",      pt:"Queijo",       cat:"Food & Drink",diff:1 },
+  { en:"Eggs",        pt:"Ovos",         cat:"Food & Drink",diff:1 },
+  { en:"Chicken",     pt:"Frango",       cat:"Food & Drink",diff:1 },
+  { en:"Beef",        pt:"Carne de vaca",cat:"Food & Drink",diff:1 },
+  { en:"Pork",        pt:"Carne de porco",cat:"Food & Drink",diff:1 },
+  { en:"Fish",        pt:"Peixe",        cat:"Food & Drink",diff:1 },
+  { en:"Salted cod",  pt:"Bacalhau",     cat:"Food & Drink",diff:1 },
+  { en:"Rice",        pt:"Arroz",        cat:"Food & Drink",diff:1 },
+  { en:"Pasta",       pt:"Massa",        cat:"Food & Drink",diff:1 },
+  { en:"Soup",        pt:"Sopa",         cat:"Food & Drink",diff:1 },
+  { en:"A salad",     pt:"Uma salada",   cat:"Food & Drink",diff:1 },
+  { en:"An apple",    pt:"Uma maçã",     cat:"Food & Drink",diff:1 },
+  { en:"A pear",      pt:"Uma pera",     cat:"Food & Drink",diff:1 },
+  { en:"An orange",   pt:"Uma laranja",  cat:"Food & Drink",diff:1 },
+  { en:"Strawberries",pt:"Morangos",     cat:"Food & Drink",diff:1 },
+  { en:"Grapes",      pt:"Uvas",         cat:"Food & Drink",diff:1 },
+  { en:"A tomato",    pt:"Um tomate",    cat:"Food & Drink",diff:1 },
+  { en:"A potato",    pt:"Uma batata",   cat:"Food & Drink",diff:1 },
+  { en:"Onion",       pt:"Cebola",       cat:"Food & Drink",diff:1 },
+  { en:"Garlic",      pt:"Alho",         cat:"Food & Drink",diff:1 },
+  { en:"Olive oil",   pt:"Azeite",       cat:"Food & Drink",diff:1 },
+  { en:"Salt",        pt:"Sal",          cat:"Food & Drink",diff:1 },
+  { en:"Pepper",      pt:"Pimenta",      cat:"Food & Drink",diff:1 },
+  { en:"A cake",      pt:"Um bolo",      cat:"Food & Drink",diff:1 },
+  { en:"Ice cream",   pt:"Gelado",       cat:"Food & Drink",diff:1 },
+  { en:"Mushrooms",   pt:"Cogumelos",    cat:"Food & Drink",diff:2 },
+  { en:"Spinach",     pt:"Espinafres",   cat:"Food & Drink",diff:2 },
+  { en:"The bill, please", pt:"A conta, se faz favor", cat:"Food & Drink",diff:1 },
+  { en:"I would like…",    pt:"Queria…",              cat:"Food & Drink",diff:1 },
 
-  // Communication — split formal / informal
-  { en: "I don't understand", pt: "Não percebo / Não entendo", cat: "Communication", diff: 2 },
-  { en: "Could you speak more slowly?", pt: "Podes falar mais devagar?", cat: "Communication", diff: 2, register: 'informal' },
-  { en: "Could you speak more slowly?", pt: "Pode falar mais devagar?", cat: "Communication", diff: 2, register: 'formal' },
-  { en: "Can you repeat that?", pt: "Podes repetir?", cat: "Communication", diff: 2, register: 'informal' },
-  { en: "Can you repeat that?", pt: "Pode repetir?", cat: "Communication", diff: 2, register: 'formal' },
-  { en: "I don't speak Portuguese well", pt: "Não falo bem português", cat: "Communication", diff: 2 },
-  { en: "Do you speak English?", pt: "Falas inglês?", cat: "Communication", diff: 2, register: 'informal' },
-  { en: "Do you speak English?", pt: "Fala inglês?", cat: "Communication", diff: 2, register: 'formal' },
+  // Kitchen
+  { en:"A knife",        pt:"Uma faca",              cat:"Kitchen",diff:1 },
+  { en:"A fork",         pt:"Um garfo",              cat:"Kitchen",diff:1 },
+  { en:"A spoon",        pt:"Uma colher",            cat:"Kitchen",diff:1 },
+  { en:"A plate",        pt:"Um prato",              cat:"Kitchen",diff:1 },
+  { en:"A bowl",         pt:"Uma tigela",            cat:"Kitchen",diff:1 },
+  { en:"A glass",        pt:"Um copo",               cat:"Kitchen",diff:1 },
+  { en:"A cup",          pt:"Uma chávena",           cat:"Kitchen",diff:1 },
+  { en:"A pot / saucepan",pt:"Uma panela",           cat:"Kitchen",diff:1 },
+  { en:"A frying pan",   pt:"Uma frigideira",        cat:"Kitchen",diff:2 },
+  { en:"An oven",        pt:"Um forno",              cat:"Kitchen",diff:1 },
+  { en:"A microwave",    pt:"Um micro-ondas",        cat:"Kitchen",diff:2 },
+  { en:"A cutting board",pt:"Uma tábua de cortar",   cat:"Kitchen",diff:2 },
+  { en:"A kettle",       pt:"Uma chaleira",          cat:"Kitchen",diff:2 },
+  { en:"A toaster",      pt:"Uma torradeira",        cat:"Kitchen",diff:2 },
+  { en:"A blender",      pt:"Uma liquidificadora",   cat:"Kitchen",diff:3 },
+  { en:"A tin opener",   pt:"Um abre-latas",         cat:"Kitchen",diff:3 },
+  { en:"A grater",       pt:"Um ralador",            cat:"Kitchen",diff:3 },
 
-  // States / Preferences — neutral (1st person)
-  { en: "I am hungry", pt: "Tenho fome", cat: "States", diff: 2 },
-  { en: "I am thirsty", pt: "Tenho sede", cat: "States", diff: 2 },
-  { en: "I am tired", pt: "Estou cansado/a", cat: "States", diff: 2 },
-  { en: "I am cold", pt: "Tenho frio", cat: "States", diff: 2 },
-  { en: "I am hot", pt: "Tenho calor", cat: "States", diff: 2 },
-  { en: "I like…", pt: "Gosto de…", cat: "Preferences", diff: 2 },
-  { en: "I don't like…", pt: "Não gosto de…", cat: "Preferences", diff: 2 },
-  { en: "I want to go to…", pt: "Quero ir a…", cat: "Intentions", diff: 2 },
-  { en: "What time is it?", pt: "Que horas são?", cat: "Time", diff: 2 },
-  { en: "At what time?", pt: "A que horas?", cat: "Time", diff: 2 },
+  // Home
+  { en:"A sofa",          pt:"Um sofá",                      cat:"Home",diff:1 },
+  { en:"A bed",           pt:"Uma cama",                     cat:"Home",diff:1 },
+  { en:"A pillow",        pt:"Uma almofada",                 cat:"Home",diff:1 },
+  { en:"A blanket",       pt:"Um cobertor",                  cat:"Home",diff:1 },
+  { en:"A shower",        pt:"Um duche",                     cat:"Home",diff:1 },
+  { en:"A bathtub",       pt:"Uma banheira",                 cat:"Home",diff:1 },
+  { en:"A window",        pt:"Uma janela",                   cat:"Home",diff:1 },
+  { en:"A door",          pt:"Uma porta",                    cat:"Home",diff:1 },
+  { en:"A lamp",          pt:"Um candeeiro",                 cat:"Home",diff:2 },
+  { en:"A carpet / rug",  pt:"Um tapete",                    cat:"Home",diff:1 },
+  { en:"Curtains",        pt:"Cortinas",                     cat:"Home",diff:2 },
+  { en:"A bathroom sink", pt:"Um lavatório",                 cat:"Home",diff:2 },
+  { en:"A kitchen sink",  pt:"Um lava-louça",                cat:"Home",diff:2 },
+  { en:"A tap / faucet",  pt:"Uma torneira",                 cat:"Home",diff:2 },
+  { en:"A wardrobe",      pt:"Um roupeiro",                  cat:"Home",diff:2 },
+  { en:"A mirror",        pt:"Um espelho",                   cat:"Home",diff:1 },
+  { en:"A washing machine",pt:"Uma máquina de lavar roupa",  cat:"Home",diff:2 },
+  { en:"A fridge",        pt:"Um frigorífico",               cat:"Home",diff:2 },
+  { en:"A television",    pt:"Uma televisão",                cat:"Home",diff:1 },
+  { en:"Stairs",          pt:"Escadas",                      cat:"Home",diff:1 },
+  { en:"The floor",       pt:"O chão",                       cat:"Home",diff:1 },
+  { en:"The ceiling",     pt:"O tecto",                      cat:"Home",diff:2 },
+  { en:"A wall",          pt:"Uma parede",                   cat:"Home",diff:1 },
+  { en:"A key",           pt:"Uma chave",                    cat:"Home",diff:1 },
+  { en:"A garden",        pt:"Um jardim",                    cat:"Home",diff:1 },
 
-  // Accommodation / Health — neutral
-  { en: "I have a reservation", pt: "Tenho uma reserva", cat: "Accommodation", diff: 2 },
-  { en: "The room is not clean", pt: "O quarto não está limpo", cat: "Accommodation", diff: 2 },
-  { en: "To call a doctor", pt: "Chamar um médico", cat: "Health", diff: 2 },
-  { en: "It hurts here", pt: "Dói aqui", cat: "Health", diff: 2 },
-  { en: "A pharmacy", pt: "Uma farmácia", cat: "Health", diff: 2 },
+  // Clothes
+  { en:"A shirt",          pt:"Uma camisa",         cat:"Clothes",diff:1 },
+  { en:"A t-shirt",        pt:"Uma t-shirt / camisola", cat:"Clothes",diff:1 },
+  { en:"Trousers",         pt:"Calças",             cat:"Clothes",diff:1 },
+  { en:"A dress",          pt:"Um vestido",         cat:"Clothes",diff:1 },
+  { en:"A skirt",          pt:"Uma saia",           cat:"Clothes",diff:1 },
+  { en:"A jacket / coat",  pt:"Um casaco",          cat:"Clothes",diff:1 },
+  { en:"Shoes",            pt:"Sapatos",            cat:"Clothes",diff:1 },
+  { en:"Socks",            pt:"Meias",              cat:"Clothes",diff:1 },
+  { en:"A belt",           pt:"Um cinto",           cat:"Clothes",diff:2 },
+  { en:"A scarf",          pt:"Um cachecol",        cat:"Clothes",diff:2 },
+  { en:"Underwear",        pt:"Roupa interior",     cat:"Clothes",diff:2 },
+  { en:"A tie",            pt:"Uma gravata",        cat:"Clothes",diff:2 },
+  { en:"A hat",            pt:"Um chapéu",          cat:"Clothes",diff:1 },
+  { en:"Gloves",           pt:"Luvas",              cat:"Clothes",diff:2 },
+  { en:"Boots",            pt:"Botas",              cat:"Clothes",diff:2 },
+  { en:"Trainers / Sneakers", pt:"Ténis",           cat:"Clothes",diff:2 },
+  { en:"A swimsuit",       pt:"Um fato de banho",   cat:"Clothes",diff:2 },
+  { en:"Pyjamas",          pt:"Pijama",             cat:"Clothes",diff:2 },
 
-  // Daily Life / Frequency — neutral
-  { en: "I live in Lisbon", pt: "Moro em Lisboa", cat: "Daily Life", diff: 2 },
-  { en: "I work as a teacher", pt: "Trabalho como professor/a", cat: "Daily Life", diff: 2 },
-  { en: "Every day", pt: "Todos os dias", cat: "Frequency", diff: 2 },
-  { en: "Sometimes", pt: "Às vezes", cat: "Frequency", diff: 2 },
-  { en: "Never", pt: "Nunca", cat: "Frequency", diff: 2 },
-  { en: "Always", pt: "Sempre", cat: "Frequency", diff: 2 },
+  // Sports
+  { en:"Football / Soccer",  pt:"Futebol",          cat:"Sports",diff:1 },
+  { en:"Swimming",           pt:"Natação",          cat:"Sports",diff:2 },
+  { en:"Tennis",             pt:"Ténis",            cat:"Sports",diff:2 },
+  { en:"Running",            pt:"Corrida",          cat:"Sports",diff:2 },
+  { en:"Cycling",            pt:"Ciclismo",         cat:"Sports",diff:2 },
+  { en:"Basketball",         pt:"Basquetebol",      cat:"Sports",diff:2 },
+  { en:"Surfing",            pt:"Surf",             cat:"Sports",diff:2 },
+  { en:"Hiking / walking",   pt:"Caminhada",        cat:"Sports",diff:2 },
+  { en:"The gym",            pt:"O ginásio",        cat:"Sports",diff:2 },
+  { en:"A match / game",     pt:"Um jogo",          cat:"Sports",diff:1 },
+  { en:"A goal",             pt:"Um golo",          cat:"Sports",diff:2 },
+  { en:"A stadium",          pt:"Um estádio",       cat:"Sports",diff:2 },
+  { en:"To play (a sport)",  pt:"Praticar / Jogar", cat:"Sports",diff:2 },
+  { en:"A referee",          pt:"Um árbitro",       cat:"Sports",diff:3 },
 
-  // B1 Intermediate
-  { en: "It depends", pt: "Depende", cat: "Expressions", diff: 3 },
-  { en: "Actually / In fact", pt: "Na verdade / De facto", cat: "Discourse", diff: 3 },
-  { en: "On the other hand", pt: "Por outro lado", cat: "Discourse", diff: 3 },
-  { en: "In my opinion", pt: "Na minha opinião", cat: "Discourse", diff: 3 },
-  { en: "For example", pt: "Por exemplo", cat: "Discourse", diff: 3 },
-  { en: "Although / Even though", pt: "Embora (+ subjunctive)", cat: "Grammar", diff: 4 },
-  { en: "As soon as", pt: "Assim que / Logo que (+ subjunctive)", cat: "Grammar", diff: 4 },
-  { en: "In order to", pt: "Para / Para que (+ subjunctive)", cat: "Grammar", diff: 3 },
-  { en: "I should have…", pt: "Devia ter…", cat: "Grammar", diff: 4 },
-  { en: "I would have…", pt: "Teria… / Tinha…", cat: "Grammar", diff: 4 },
-  { en: "Something is bothering me", pt: "Alguma coisa está a incomodar-me", cat: "Emotions", diff: 3 },
-  { en: "I miss Portugal", pt: "Tenho saudades de Portugal", cat: "Emotions", diff: 3 },
-  { en: "I am looking forward to it", pt: "Estou ansioso/a por isso", cat: "Emotions", diff: 3 },
-  { en: "What a shame!", pt: "Que pena!", cat: "Reactions", diff: 3 },
-  { en: "Lucky you!", pt: "Que sorte!", cat: "Reactions", diff: 3 },
-  { en: "It doesn't matter", pt: "Não faz mal / Não importa", cat: "Reactions", diff: 3 },
-  { en: "It is worth it", pt: "Vale a pena", cat: "Expressions", diff: 3 },
-  { en: "To take advantage of", pt: "Aproveitar", cat: "Verbs", diff: 3 },
-  { en: "To complain", pt: "Queixar-se", cat: "Verbs", diff: 3 },
-  { en: "To manage / to be able to", pt: "Conseguir", cat: "Verbs", diff: 3 },
-  { en: "To realize / to notice", pt: "Reparar / Aperceber-se", cat: "Verbs", diff: 3 },
-  { en: "To belong to", pt: "Pertencer a", cat: "Verbs", diff: 3 },
-  { en: "Headquarters / head office", pt: "Sede", cat: "Business", diff: 3 },
-  { en: "To deal with", pt: "Lidar com", cat: "Business", diff: 3 },
-  { en: "The unemployment rate", pt: "A taxa de desemprego", cat: "Society", diff: 3 },
+  // Culture
+  { en:"Traditional Portuguese soulful music",   pt:"Fado",              cat:"Culture",diff:2 },
+  { en:"Portuguese custard tart",                pt:"Pastel de nata",    cat:"Culture",diff:2 },
+  { en:"Decorative hand-painted tile",           pt:"Azulejo",           cat:"Culture",diff:2 },
+  { en:"Traditional bullfight",                  pt:"Tourada",           cat:"Culture",diff:3 },
+  { en:"Street festival / outdoor party",        pt:"Arraial",           cat:"Culture",diff:3 },
+  { en:"Traditional Portuguese tavern",          pt:"Taberna",           cat:"Culture",diff:2 },
+  { en:"Grilled pork sandwich (street food)",    pt:"Bifana",            cat:"Culture",diff:2 },
+  { en:"The Lisbon tram",                        pt:"O elétrico",        cat:"Culture",diff:2 },
+  { en:"Portugal's most famous wine region",     pt:"O Douro",           cat:"Culture",diff:3 },
+  { en:"Longing / bittersweet nostalgia (untranslatable)", pt:"Saudade", cat:"Culture",diff:3 },
+  { en:"The art of improvising a solution",      pt:"Desenrascanço",     cat:"Culture",diff:4 },
 
-  // B2 Upper-Intermediate
-  { en: "To put up with / to stand", pt: "Aguentar / Suportar", cat: "Verbs", diff: 4 },
-  { en: "To give up", pt: "Desistir", cat: "Verbs", diff: 4 },
-  { en: "To get used to", pt: "Habituar-se a / Acostumar-se a", cat: "Verbs", diff: 4 },
-  { en: "To pretend", pt: "Fingir", cat: "Verbs", diff: 4 },
-  { en: "To overcome", pt: "Superar / Ultrapassar", cat: "Verbs", diff: 4 },
-  { en: "To stand out", pt: "Destacar-se", cat: "Verbs", diff: 4 },
-  { en: "Regardless of", pt: "Independentemente de", cat: "Connectors", diff: 4 },
-  { en: "Provided that", pt: "Desde que (+ subjunctive)", cat: "Grammar", diff: 4 },
-  { en: "Unless", pt: "A não ser que / Salvo se (+ subjunctive)", cat: "Grammar", diff: 4 },
-  { en: "However much", pt: "Por mais que (+ subjunctive)", cat: "Grammar", diff: 4 },
-  { en: "It is essential that…", pt: "É essencial que… (+ subjunctive)", cat: "Grammar", diff: 4 },
-  { en: "I doubt that…", pt: "Duvido que… (+ subjunctive)", cat: "Grammar", diff: 4 },
-  { en: "That's easier said than done", pt: "É mais fácil dizer do que fazer", cat: "Idioms", diff: 4 },
-  { en: "Every cloud has a silver lining", pt: "Não há mal que sempre dure", cat: "Idioms", diff: 4 },
-  { en: "Blessed are those who expect nothing", pt: "Quem não arrisca, não petisca", cat: "Proverbs", diff: 5 },
-  { en: "To feel like / to be in the mood for", pt: "Ter vontade de / Apetecer", cat: "Expressions", diff: 4 },
-  { en: "To be about to", pt: "Estar prestes a / Estar a ponto de", cat: "Expressions", diff: 4 },
-  { en: "On purpose", pt: "De propósito / Propositadamente", cat: "Expressions", diff: 4 },
-  { en: "Without a doubt", pt: "Sem dúvida", cat: "Expressions", diff: 4 },
-  { en: "Sustainable development", pt: "Desenvolvimento sustentável", cat: "Society", diff: 4 },
-  { en: "Income inequality", pt: "Desigualdade de rendimentos", cat: "Society", diff: 4 },
-  { en: "Budget deficit", pt: "Défice orçamental", cat: "Economy", diff: 4 },
-  { en: "Civil servants", pt: "Funcionários públicos", cat: "Society", diff: 4 },
+  // Navigation
+  { en:"Where is the bathroom?", pt:"Onde é a casa de banho?",    cat:"Navigation",diff:1 },
+  { en:"Turn left",  pt:"Vira à esquerda",  cat:"Navigation",diff:1, register:"informal" },
+  { en:"Turn left",  pt:"Vire à esquerda",  cat:"Navigation",diff:1, register:"formal" },
+  { en:"Turn right", pt:"Vira à direita",   cat:"Navigation",diff:1, register:"informal" },
+  { en:"Turn right", pt:"Vire à direita",   cat:"Navigation",diff:1, register:"formal" },
+  { en:"Straight ahead",  pt:"Sempre em frente", cat:"Navigation",diff:1 },
+  { en:"The train station", pt:"A estação de comboio", cat:"Transport",diff:2 },
+  { en:"A return ticket",   pt:"Um bilhete de ida e volta", cat:"Transport",diff:2 },
 
-  // C1 Advanced
-  { en: "To be stuck between a rock and a hard place", pt: "Estar entre a espada e a parede", cat: "Idioms", diff: 5 },
-  { en: "Actions speak louder than words", pt: "Palavras leva-as o vento", cat: "Proverbs", diff: 5 },
-  { en: "To beat around the bush", pt: "Andar à volta do assunto / Falar pelos cotovelos", cat: "Idioms", diff: 5 },
-  { en: "To have the gift of the gab", pt: "Ter o dom da palavra", cat: "Idioms", diff: 5 },
-  { en: "To add fuel to the fire", pt: "Deitar achas para a fogueira", cat: "Idioms", diff: 5 },
-  { en: "Turn a blind eye", pt: "Fazer vista grossa", cat: "Idioms", diff: 5 },
-  { en: "To poke your nose in", pt: "Meter o nariz onde não é chamado", cat: "Idioms", diff: 5 },
-  { en: "To sweep under the carpet", pt: "Varrer para debaixo do tapete", cat: "Idioms", diff: 5 },
-  { en: "Nonetheless / Nevertheless", pt: "Não obstante / Todavia", cat: "Formal Discourse", diff: 5 },
-  { en: "By virtue of / By means of", pt: "Por virtude de / Por meio de", cat: "Formal Discourse", diff: 5 },
-  { en: "Notwithstanding", pt: "Não obstante", cat: "Formal Discourse", diff: 5 },
-  { en: "As stipulated", pt: "Conforme estipulado / Nos termos de", cat: "Legal / Formal", diff: 5 },
-  { en: "To be entitled to", pt: "Ter direito a", cat: "Legal / Formal", diff: 5 },
-  { en: "Pursuant to", pt: "Ao abrigo de / Em conformidade com", cat: "Legal / Formal", diff: 5 },
-  { en: "To infer / to deduce", pt: "Depreender / Deduzir", cat: "Academic", diff: 5 },
-  { en: "To highlight / to underscore", pt: "Sublinhar / Salientar", cat: "Academic", diff: 5 },
-  { en: "It should be noted that…", pt: "Importa salientar que… / Cumpre referir que…", cat: "Academic", diff: 5 },
-  { en: "In light of the above", pt: "À luz do exposto", cat: "Academic", diff: 5 },
-  { en: "Counterproductive", pt: "Contraproducente", cat: "Advanced Vocab", diff: 5 },
-  { en: "Groundbreaking", pt: "Pioneiro / Inovador / Revolucionário", cat: "Advanced Vocab", diff: 5 },
-  { en: "Far-reaching", pt: "De grande alcance / Com grande impacto", cat: "Advanced Vocab", diff: 5 },
-  { en: "Overwhelming majority", pt: "Esmagadora maioria", cat: "Advanced Vocab", diff: 5 },
-  { en: "State-of-the-art", pt: "De última geração / De ponta", cat: "Advanced Vocab", diff: 5 },
+  // States & Needs
+  { en:"I am hungry",  pt:"Tenho fome",      cat:"States",diff:2 },
+  { en:"I am thirsty", pt:"Tenho sede",      cat:"States",diff:2 },
+  { en:"I am tired",   pt:"Estou cansado/a", cat:"States",diff:2 },
+  { en:"I am cold",    pt:"Tenho frio",      cat:"States",diff:2 },
+  { en:"I am hot",     pt:"Tenho calor",     cat:"States",diff:2 },
+  { en:"I have a reservation", pt:"Tenho uma reserva", cat:"Accommodation",diff:2 },
+  { en:"It hurts here", pt:"Dói aqui",       cat:"Health",diff:2 },
+  { en:"A pharmacy",   pt:"Uma farmácia",    cat:"Health",diff:2 },
 
-  // C2 Mastery / Near-Native
-  { en: "He who has a companion has a treasure (proverb)", pt: "Quem tem um amigo, tem um tesouro", cat: "Proverbs", diff: 6 },
-  { en: "Still waters run deep", pt: "Águas calmas são as mais profundas", cat: "Proverbs", diff: 6 },
-  { en: "Don't count your chickens before they hatch", pt: "Não vendas a pele do urso antes de o matar", cat: "Proverbs", diff: 6 },
-  { en: "The early bird catches the worm", pt: "Deus ajuda quem cedo madruga", cat: "Proverbs", diff: 6 },
-  { en: "That longing / melancholy for something loved and lost", pt: "Saudade", cat: "Untranslatable", diff: 6 },
-  { en: "The pleasure of small things / finding beauty in the ordinary", pt: "Saudosismo", cat: "Untranslatable", diff: 6 },
-  { en: "To feel shame on behalf of another person", pt: "Ter vergonha alheia", cat: "Untranslatable", diff: 6 },
-  { en: "The art of improvising a solution from whatever is available", pt: "Desenrascanço", cat: "Untranslatable", diff: 6 },
-  { en: "To be in a hopeless/messy situation", pt: "Estar numa alhada / Estar numa sarilhos", cat: "Idioms", diff: 6 },
-  { en: "To vanish / disappear without a trace", pt: "Desaparecer como por magia / Sumir-se", cat: "Idioms", diff: 6 },
-  { en: "Formally speaking, the decision is irreversible", pt: "Formalmente falando, a decisão é irreversível", cat: "Formal", diff: 6 },
-  { en: "The proposed measures ought to be re-examined", pt: "As medidas propostas carecem de ser reanalisadas", cat: "Formal", diff: 6 },
-  { en: "The matter warrants further scrutiny", pt: "A questão merece uma análise mais aprofundada", cat: "Academic", diff: 6 },
-  { en: "It would be remiss not to mention…", pt: "Seria uma omissão não mencionar…", cat: "Academic", diff: 6 },
-  { en: "A pivotal / watershed moment", pt: "Um momento decisivo / Uma viragem histórica", cat: "Advanced Vocab", diff: 6 },
-  { en: "To be at a crossroads", pt: "Estar numa encruzilhada", cat: "Expressions", diff: 6 },
-  { en: "Fatalistic acceptance of one's fate", pt: "Fatalismo / Resignação", cat: "Culture", diff: 6 },
-  { en: "Nostalgic longing specific to Portuguese culture", pt: "Saudade (cultural concept)", cat: "Culture", diff: 6 },
+  // Everyday expressions
+  { en:"I like…",      pt:"Gosto de…",       cat:"Expressions",diff:2 },
+  { en:"I don't like…",pt:"Não gosto de…",   cat:"Expressions",diff:2 },
+  { en:"I want…",      pt:"Quero…",          cat:"Expressions",diff:1 },
+  { en:"I need…",      pt:"Preciso de…",     cat:"Expressions",diff:2 },
+  { en:"It is worth it", pt:"Vale a pena",   cat:"Expressions",diff:3 },
+  { en:"It doesn't matter", pt:"Não faz mal / Não importa", cat:"Expressions",diff:3 },
+  { en:"Of course",    pt:"Claro / Com certeza",cat:"Expressions",diff:2 },
+  { en:"I think that…",pt:"Acho que…",      cat:"Expressions",diff:2 },
+  { en:"In my opinion",pt:"Na minha opinião",cat:"Expressions",diff:3 },
+  { en:"Every day",    pt:"Todos os dias",   cat:"Frequency",diff:2 },
+  { en:"Sometimes",    pt:"Às vezes",        cat:"Frequency",diff:2 },
+  { en:"Never",        pt:"Nunca",           cat:"Frequency",diff:2 },
+  { en:"Always",       pt:"Sempre",          cat:"Frequency",diff:2 },
+
+  // Grammar structures (B1)
+  { en:"Although / Even though", pt:"Embora (+ conjuntivo)",          cat:"Grammar",diff:4 },
+  { en:"As soon as",             pt:"Assim que / Logo que (+ conjuntivo)", cat:"Grammar",diff:4 },
+  { en:"In order to",            pt:"Para / Para que",                cat:"Grammar",diff:3 },
+  { en:"Provided that",          pt:"Desde que (+ conjuntivo)",       cat:"Grammar",diff:4 },
+  { en:"Unless",                 pt:"A não ser que (+ conjuntivo)",   cat:"Grammar",diff:4 },
+
+  // A few key idioms
+  { en:"Every cloud has a silver lining", pt:"Não há mal que sempre dure",    cat:"Idioms",diff:4 },
+  { en:"Turn a blind eye",               pt:"Fazer vista grossa",            cat:"Idioms",diff:5 },
+  { en:"Add fuel to the fire",           pt:"Deitar achas para a fogueira",  cat:"Idioms",diff:5 },
+  { en:"Actions speak louder than words",pt:"Palavras leva-as o vento",      cat:"Idioms",diff:5 },
+  { en:"Don't count your chickens before they hatch", pt:"Não vendas a pele do urso antes de o matar", cat:"Proverbs",diff:5 },
 ];
 
-const diffColors = { 1:'#3ecf8e', 2:'#6ee7b7', 3:'#fbbf24', 4:'#fb923c', 5:'#f87171', 6:'#c084fc' };
+const diffColors = { 1:'#22c55e', 2:'#84cc16', 3:'#f59e0b', 4:'#f97316', 5:'#ef4444', 6:'#a855f7' };
+
+// ── DIRECTION MODE ──
+let dirMode = 'random'; // 'random' | 'en' | 'pt'
+
+function setMode(mode, btn) {
+  dirMode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  shuffleCards();
+}
 
 // ── SAVE ──
 function loadSaved() {
@@ -738,8 +831,6 @@ function loadSaved() {
 function persistSaved() { localStorage.setItem('ptSaved', JSON.stringify([...savedSet])); }
 
 let savedSet = loadSaved();
-
-// include register in key so formal/informal pairs save independently
 function cardKey(c) { return c.en + '||' + (c.register || ''); }
 
 function toggleSave(e) {
@@ -773,7 +864,7 @@ function renderSavedList() {
   const list = document.getElementById('savedList');
   const saved = cards.filter(c => savedSet.has(cardKey(c)));
   if (!saved.length) {
-    list.innerHTML = '<li class="saved-empty">No saved cards yet &#8212; click &#9734; on a card to save it.</li>';
+    list.innerHTML = '<li class="saved-empty">No saved cards yet — click &#9734; on a card to save it.</li>';
     return;
   }
   list.innerHTML = saved.map(c => {
@@ -782,11 +873,9 @@ function renderSavedList() {
       ? '<span class="saved-reg ' + c.register + '">' + (c.register === 'informal' ? 'tu' : 'você') + '</span>'
       : '';
     return '<li onclick="jumpToCard(\'' + k + '\')">' +
-      '<span class="saved-en">' + c.en + '</span>' +
-      regTag +
+      '<span class="saved-en">' + c.en + '</span>' + regTag +
       '<span class="saved-pt">' + c.pt + '</span>' +
-      '<button class="remove-saved" onclick="removeSaved(event,\'' + k + '\')">&#215;</button>' +
-      '</li>';
+      '<button class="remove-saved" onclick="removeSaved(event,\'' + k + '\')">&#215;</button></li>';
   }).join('');
 }
 
@@ -812,7 +901,7 @@ function clearAllSaved() {
 }
 
 // ── FLASHCARD LOGIC ──
-let deck = [], cursor = 0, showEnglishFirst = true;
+let deck = [], cursor = 0;
 
 function shuffle(arr) {
   const a = [...arr];
@@ -823,22 +912,33 @@ function shuffle(arr) {
   return a;
 }
 
-function buildDeck() { deck = shuffle(cards); }
+function buildDeck() {
+  deck = shuffle(cards).map(c => ({
+    ...c,
+    _showEn: dirMode === 'en' ? true : dirMode === 'pt' ? false : Math.random() < 0.5
+  }));
+}
 
 function renderCard() {
-  const card = deck[cursor];
-  document.getElementById('cardInner').classList.remove('flipped');
+  const inner = document.getElementById('cardInner');
+  // Instantly reset to front without playing the flip animation
+  inner.style.transition = 'none';
+  inner.classList.remove('flipped');
+  void inner.offsetWidth; // force reflow so the removal applies immediately
+  inner.style.transition = '';
 
-  document.getElementById('frontLabel').textContent = showEnglishFirst ? 'English' : 'Portuguese';
-  document.getElementById('frontWord').textContent  = showEnglishFirst ? card.en : card.pt;
+  const card = deck[cursor];
+  const showEn = card._showEn;
+
+  document.getElementById('frontLabel').textContent = showEn ? 'English' : 'Portuguese';
+  document.getElementById('frontWord').textContent  = showEn ? card.en : card.pt;
   document.getElementById('frontCat').textContent   = card.cat;
-  document.getElementById('backLabel').textContent  = showEnglishFirst ? 'Portuguese' : 'English';
-  document.getElementById('backWord').textContent   = showEnglishFirst ? card.pt : card.en;
+  document.getElementById('backLabel').textContent  = showEn ? 'Portuguese' : 'English';
+  document.getElementById('backWord').textContent   = showEn ? card.pt : card.en;
   document.getElementById('backHint').textContent   = card.cat;
-  document.getElementById('diffDot').style.background = diffColors[card.diff] || '#7a7f9a';
+  document.getElementById('diffDot').style.background = diffColors[card.diff] || '#22c55e';
   document.getElementById('cardCounter').textContent = 'Card ' + (cursor + 1) + ' of ' + deck.length;
 
-  // register badge
   const badge = document.getElementById('registerBadge');
   if (card.register === 'informal') {
     badge.textContent = 'Informal · tu';
@@ -857,14 +957,6 @@ function flipCard() { document.getElementById('cardInner').classList.toggle('fli
 function nextCard() { cursor = (cursor + 1) % deck.length; renderCard(); }
 function prevCard() { cursor = (cursor - 1 + deck.length) % deck.length; renderCard(); }
 function shuffleCards() { buildDeck(); cursor = 0; renderCard(); }
-
-function toggleLang() {
-  showEnglishFirst = !showEnglishFirst;
-  document.getElementById('langIndicator').textContent = showEnglishFirst
-    ? 'Prompt: English → Portuguese'
-    : 'Prompt: Portuguese → English';
-  renderCard();
-}
 
 // ── VERB TENSES ──
 const tenses = [
@@ -901,7 +993,7 @@ const tenses = [
   { name:'Imperativo', subtitle:'Imperative',
     rows:[['(tu)','fala!'],['(você)','fale!'],['(nós)','falemos!'],['(vocês)','falem!']],
     example:'<strong>Fala</strong> mais alto! — Speak louder!' },
-  { name:'Perífrases Progressivas', subtitle:'Progressive constructions (estar a + inf.)',
+  { name:'Perífrases Progressivas', subtitle:'Progressive constructions (estar a + infinitive)',
     rows:[['eu','estou a falar'],['tu','estás a falar'],['ele/ela','está a falar'],['nós','estamos a falar'],['vocês','estão a falar']],
     example:'Estou <strong>a falar</strong> com ela agora. — I am speaking to her now.' },
 ];
