@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PT Trainer — European Portuguese</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #23273a;
+    --border: #2e3347;
+    --accent: #4f8ef7;
+    --accent2: #7c5cfc;
+    --text: #e8eaf0;
+    --muted: #7a7f9a;
+    --green: #3ecf8e;
+    --red: #f66;
+    --yellow: #f7c948;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  header h1 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  header span {
+    font-size: 0.8rem;
+    color: var(--muted);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 2px 8px;
+  }
+
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    gap: 4px;
+  }
+
+  nav button {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.875rem;
+    padding: 12px 16px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  nav button:hover { color: var(--text); }
+  nav button.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  main {
+    flex: 1;
+    padding: 40px 32px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ── FLASHCARDS ── */
+  .card-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+
+  .toggle-lang {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 8px 16px;
+    transition: border-color 0.15s;
+  }
+  .toggle-lang:hover { border-color: var(--accent); }
+
+  .lang-indicator {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .card-counter {
+    margin-left: auto;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .card-scene {
+    perspective: 1200px;
+    width: 100%;
+    height: 260px;
+    cursor: pointer;
+    margin-bottom: 28px;
+  }
+
+  .card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.55s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .card-inner.flipped { transform: rotateY(180deg); }
+
+  .card-face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 32px;
+    border: 1px solid var(--border);
+  }
+
+  .card-front {
+    background: var(--surface);
+  }
+
+  .card-back {
+    background: linear-gradient(135deg, var(--surface) 0%, #1e2236 100%);
+    transform: rotateY(180deg);
+    border-color: var(--accent2);
+  }
+
+  .card-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .card-word {
+    font-size: 2rem;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: -0.01em;
+  }
+
+  .card-back .card-word { color: var(--accent); }
+
+  .card-hint {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .card-category {
+    font-size: 0.72rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+
+  .difficulty-dot {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .card-nav {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 0.875rem;
+    padding: 10px 24px;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .btn:hover { background: var(--border); }
+
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .btn-primary:hover { filter: brightness(1.1); }
+
+  .btn-icon {
+    padding: 10px 16px;
+    font-size: 1.1rem;
+  }
+
+  /* ── VERB TENSES ── */
+  .tense-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 20px;
+  }
+
+  .tense-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .tense-card h3 {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.875rem;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .tense-card h3 em {
+    font-style: normal;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .tense-body { padding: 16px; }
+
+  .conj-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  .conj-table td {
+    padding: 5px 8px;
+  }
+
+  .conj-table td:first-child {
+    color: var(--muted);
+    font-size: 0.78rem;
+    width: 80px;
+  }
+
+  .conj-table td:last-child {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .tense-example {
+    margin-top: 12px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+    font-style: italic;
+  }
+
+  .tense-example strong {
+    color: var(--text);
+    font-style: normal;
+    font-weight: 400;
+  }
+
+  /* ── IRREGULAR VERBS ── */
+  .irr-search {
+    margin-bottom: 24px;
+  }
+
+  .irr-search input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 0.9rem;
+    padding: 10px 16px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .irr-search input:focus { border-color: var(--accent); }
+  .irr-search input::placeholder { color: var(--muted); }
+
+  .verb-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .verb-tab {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    transition: all 0.15s;
+  }
+
+  .verb-tab:hover, .verb-tab.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .verb-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    display: none;
+  }
+
+  .verb-block.visible { display: block; }
+
+  .verb-header {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .verb-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .verb-header span {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .verb-tenses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0;
+  }
+
+  .verb-tense-col {
+    padding: 16px 20px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .verb-tense-col h4 {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .verb-tense-col .forms {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 0.85rem;
+  }
+
+  .verb-tense-col .forms span {
+    color: var(--accent);
+  }
+
+  .verb-tense-col .forms em {
+    font-style: normal;
+    color: var(--muted);
+    font-size: 0.75rem;
+    margin-right: 6px;
+  }
+
+  /* responsive */
+  @media (max-width: 600px) {
+    main { padding: 24px 16px; }
+    nav { padding: 0 16px; }
+    header { padding: 14px 16px; }
+    .card-word { font-size: 1.5rem; }
+    .tense-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>PT Trainer</h1>
+  <span>European Portuguese</span>
+</header>
+
+<nav>
+  <button class="active" onclick="showSection('flashcards', this)">Flashcards</button>
+  <button onclick="showSection('tenses', this)">Verb Tenses</button>
+  <button onclick="showSection('irregular', this)">Irregular Verbs</button>
+</nav>
+
+<main>
+
+  <!-- ── FLASHCARDS ── -->
+  <section id="flashcards" class="section active">
+    <div class="card-controls">
+      <button class="toggle-lang" onclick="toggleLang()">⇄ Flip Language</button>
+      <span class="lang-indicator" id="langIndicator">Prompt: English → Portuguese</span>
+      <span class="card-counter" id="cardCounter">Card 1</span>
+    </div>
+
+    <div class="card-scene" onclick="flipCard()">
+      <div class="card-inner" id="cardInner">
+        <div class="card-face card-front">
+          <div class="difficulty-dot" id="diffDot"></div>
+          <div class="card-label" id="frontLabel">English</div>
+          <div class="card-word" id="frontWord"></div>
+          <div class="card-hint">Click to reveal</div>
+          <div class="card-category" id="frontCat"></div>
+        </div>
+        <div class="card-face card-back">
+          <div class="card-label" id="backLabel">Portuguese</div>
+          <div class="card-word" id="backWord"></div>
+          <div class="card-hint" id="backHint"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-nav">
+      <button class="btn btn-icon" onclick="prevCard()">←</button>
+      <button class="btn btn-primary" onclick="nextCard()">Next card</button>
+      <button class="btn btn-icon" onclick="shuffleCards()">⇌</button>
+    </div>
+  </section>
+
+  <!-- ── VERB TENSES ── -->
+  <section id="tenses" class="section">
+    <div class="tense-grid" id="tenseGrid"></div>
+  </section>
+
+  <!-- ── IRREGULAR VERBS ── -->
+  <section id="irregular" class="section">
+    <div class="irr-search">
+      <input type="text" placeholder="Search verb…" oninput="filterVerbs(this.value)" id="verbSearch">
+    </div>
+    <div class="verb-tabs" id="verbTabs"></div>
+    <div id="verbBlocks"></div>
+  </section>
+
+</main>
+
+<script>
+// ══════════════════════════════════════════════
+// FLASHCARD DATA
+// ══════════════════════════════════════════════
+const cards = [
+  // ── A1 Basics ──
+  { en: "Hello", pt: "Olá", cat: "Greetings", diff: 1 },
+  { en: "Good morning", pt: "Bom dia", cat: "Greetings", diff: 1 },
+  { en: "Good afternoon", pt: "Boa tarde", cat: "Greetings", diff: 1 },
+  { en: "Good evening / Good night", pt: "Boa noite", cat: "Greetings", diff: 1 },
+  { en: "Please", pt: "Por favor / Se faz favor", cat: "Essentials", diff: 1 },
+  { en: "Thank you", pt: "Obrigado (m) / Obrigada (f)", cat: "Essentials", diff: 1 },
+  { en: "You're welcome", pt: "De nada", cat: "Essentials", diff: 1 },
+  { en: "Excuse me / Sorry", pt: "Com licença / Desculpe", cat: "Essentials", diff: 1 },
+  { en: "Yes", pt: "Sim", cat: "Essentials", diff: 1 },
+  { en: "No", pt: "Não", cat: "Essentials", diff: 1 },
+  { en: "My name is…", pt: "Chamo-me… / O meu nome é…", cat: "Introductions", diff: 1 },
+  { en: "What is your name?", pt: "Como se chama?", cat: "Introductions", diff: 1 },
+  { en: "How are you?", pt: "Como está? / Como estás?", cat: "Introductions", diff: 1 },
+  { en: "I am fine", pt: "Estou bem", cat: "Introductions", diff: 1 },
+  { en: "Where are you from?", pt: "De onde é?", cat: "Introductions", diff: 1 },
+  { en: "I am from England", pt: "Sou de Inglaterra", cat: "Introductions", diff: 1 },
+  { en: "Water", pt: "Água", cat: "Food & Drink", diff: 1 },
+  { en: "Coffee", pt: "Café", cat: "Food & Drink", diff: 1 },
+  { en: "Bread", pt: "Pão", cat: "Food & Drink", diff: 1 },
+  { en: "The bill, please", pt: "A conta, se faz favor", cat: "Food & Drink", diff: 1 },
+  { en: "I would like…", pt: "Queria…", cat: "Food & Drink", diff: 1 },
+  { en: "A white coffee", pt: "Um galão / Uma meia de leite", cat: "Food & Drink", diff: 2 },
+  { en: "How much does it cost?", pt: "Quanto custa?", cat: "Shopping", diff: 1 },
+  { en: "Where is the bathroom?", pt: "Onde é a casa de banho?", cat: "Navigation", diff: 1 },
+  { en: "Turn left", pt: "Vire à esquerda", cat: "Navigation", diff: 1 },
+  { en: "Turn right", pt: "Vire à direita", cat: "Navigation", diff: 1 },
+  { en: "Straight ahead", pt: "Em frente / Sempre em frente", cat: "Navigation", diff: 1 },
+  { en: "The train station", pt: "A estação de comboio", cat: "Transport", diff: 2 },
+  { en: "A return ticket", pt: "Um bilhete de ida e volta", cat: "Transport", diff: 2 },
+  { en: "One", pt: "Um / Uma", cat: "Numbers", diff: 1 },
+  { en: "Two", pt: "Dois / Duas", cat: "Numbers", diff: 1 },
+  { en: "Three", pt: "Três", cat: "Numbers", diff: 1 },
+  { en: "Ten", pt: "Dez", cat: "Numbers", diff: 1 },
+  { en: "One hundred", pt: "Cem / Cento", cat: "Numbers", diff: 1 },
+  { en: "Today", pt: "Hoje", cat: "Time", diff: 1 },
+  { en: "Tomorrow", pt: "Amanhã", cat: "Time", diff: 1 },
+  { en: "Yesterday", pt: "Ontem", cat: "Time", diff: 1 },
+  { en: "Monday", pt: "Segunda-feira", cat: "Days", diff: 1 },
+  { en: "Weekend", pt: "Fim de semana", cat: "Days", diff: 1 },
+
+  // ── A2 Elementary ──
+  { en: "I don't understand", pt: "Não percebo / Não entendo", cat: "Communication", diff: 2 },
+  { en: "Could you speak more slowly?", pt: "Pode falar mais devagar?", cat: "Communication", diff: 2 },
+  { en: "Can you repeat that?", pt: "Pode repetir?", cat: "Communication", diff: 2 },
+  { en: "I don't speak Portuguese well", pt: "Não falo bem português", cat: "Communication", diff: 2 },
+  { en: "Do you speak English?", pt: "Fala inglês?", cat: "Communication", diff: 2 },
+  { en: "I am hungry", pt: "Tenho fome", cat: "States", diff: 2 },
+  { en: "I am thirsty", pt: "Tenho sede", cat: "States", diff: 2 },
+  { en: "I am tired", pt: "Estou cansado/a", cat: "States", diff: 2 },
+  { en: "I am cold", pt: "Tenho frio", cat: "States", diff: 2 },
+  { en: "I am hot", pt: "Tenho calor", cat: "States", diff: 2 },
+  { en: "I like…", pt: "Gosto de…", cat: "Preferences", diff: 2 },
+  { en: "I don't like…", pt: "Não gosto de…", cat: "Preferences", diff: 2 },
+  { en: "I want to go to…", pt: "Quero ir a…", cat: "Intentions", diff: 2 },
+  { en: "What time is it?", pt: "Que horas são?", cat: "Time", diff: 2 },
+  { en: "At what time?", pt: "A que horas?", cat: "Time", diff: 2 },
+  { en: "I have a reservation", pt: "Tenho uma reserva", cat: "Accommodation", diff: 2 },
+  { en: "The room is not clean", pt: "O quarto não está limpo", cat: "Accommodation", diff: 2 },
+  { en: "To call a doctor", pt: "Chamar um médico", cat: "Health", diff: 2 },
+  { en: "It hurts here", pt: "Dói aqui", cat: "Health", diff: 2 },
+  { en: "A pharmacy", pt: "Uma farmácia", cat: "Health", diff: 2 },
+  { en: "I live in Lisbon", pt: "Moro em Lisboa", cat: "Daily Life", diff: 2 },
+  { en: "I work as a teacher", pt: "Trabalho como professor/a", cat: "Daily Life", diff: 2 },
+  { en: "Every day", pt: "Todos os dias", cat: "Frequency", diff: 2 },
+  { en: "Sometimes", pt: "Às vezes", cat: "Frequency", diff: 2 },
+  { en: "Never", pt: "Nunca", cat: "Frequency", diff: 2 },
+  { en: "Always", pt: "Sempre", cat: "Frequency", diff: 2 },
+
+  // ── B1 Intermediate ──
+  { en: "It depends", pt: "Depende", cat: "Expressions", diff: 3 },
+  { en: "Actually / In fact", pt: "Na verdade / De facto", cat: "Discourse", diff: 3 },
+  { en: "On the other hand", pt: "Por outro lado", cat: "Discourse", diff: 3 },
+  { en: "In my opinion", pt: "Na minha opinião", cat: "Discourse", diff: 3 },
+  { en: "For example", pt: "Por exemplo", cat: "Discourse", diff: 3 },
+  { en: "Although / Even though", pt: "Embora (+ subjunctive)", cat: "Grammar", diff: 4 },
+  { en: "As soon as", pt: "Assim que / Logo que (+ subjunctive)", cat: "Grammar", diff: 4 },
+  { en: "In order to", pt: "Para / Para que (+ subjunctive)", cat: "Grammar", diff: 3 },
+  { en: "I should have…", pt: "Devia ter…", cat: "Grammar", diff: 4 },
+  { en: "I would have…", pt: "Teria… / Tinha…", cat: "Grammar", diff: 4 },
+  { en: "Something is bothering me", pt: "Alguma coisa está a incomodar-me", cat: "Emotions", diff: 3 },
+  { en: "I miss Portugal", pt: "Tenho saudades de Portugal", cat: "Emotions", diff: 3 },
+  { en: "I am looking forward to it", pt: "Estou ansioso/a por isso", cat: "Emotions", diff: 3 },
+  { en: "What a shame!", pt: "Que pena!", cat: "Reactions", diff: 3 },
+  { en: "Lucky you!", pt: "Que sorte!", cat: "Reactions", diff: 3 },
+  { en: "It doesn't matter", pt: "Não faz mal / Não importa", cat: "Reactions", diff: 3 },
+  { en: "It is worth it", pt: "Vale a pena", cat: "Expressions", diff: 3 },
+  { en: "To take advantage of", pt: "Aproveitar", cat: "Verbs", diff: 3 },
+  { en: "To complain", pt: "Queixar-se", cat: "Verbs", diff: 3 },
+  { en: "To manage / to be able to", pt: "Conseguir", cat: "Verbs", diff: 3 },
+  { en: "To realize / to notice", pt: "Reparar / Aperceber-se", cat: "Verbs", diff: 3 },
+  { en: "To belong to", pt: "Pertencer a", cat: "Verbs", diff: 3 },
+  { en: "Headquarters / head office", pt: "Sede", cat: "Business", diff: 3 },
+  { en: "To deal with", pt: "Lidar com", cat: "Business", diff: 3 },
+  { en: "The unemployment rate", pt: "A taxa de desemprego", cat: "Society", diff: 3 },
+
+  // ── B2 Upper-Intermediate ──
+  { en: "To put up with / to stand", pt: "Aguentar / Suportar", cat: "Verbs", diff: 4 },
+  { en: "To give up", pt: "Desistir", cat: "Verbs", diff: 4 },
+  { en: "To get used to", pt: "Habituar-se a / Acostumar-se a", cat: "Verbs", diff: 4 },
+  { en: "To pretend", pt: "Fingir", cat: "Verbs", diff: 4 },
+  { en: "To overcome", pt: "Superar / Ultrapassar", cat: "Verbs", diff: 4 },
+  { en: "To stand out", pt: "Destacar-se", cat: "Verbs", diff: 4 },
+  { en: "Regardless of", pt: "Independentemente de", cat: "Connectors", diff: 4 },
+  { en: "Provided that", pt: "Desde que (+ subjunctive)", cat: "Grammar", diff: 4 },
+  { en: "Unless", pt: "A não ser que / Salvo se (+ subjunctive)", cat: "Grammar", diff: 4 },
+  { en: "However much", pt: "Por mais que (+ subjunctive)", cat: "Grammar", diff: 4 },
+  { en: "It is essential that…", pt: "É essencial que… (+ subjunctive)", cat: "Grammar", diff: 4 },
+  { en: "I doubt that…", pt: "Duvido que… (+ subjunctive)", cat: "Grammar", diff: 4 },
+  { en: "That's easier said than done", pt: "É mais fácil dizer do que fazer", cat: "Idioms", diff: 4 },
+  { en: "Every cloud has a silver lining", pt: "Não há mal que sempre dure", cat: "Idioms", diff: 4 },
+  { en: "Blessed are those who expect nothing", pt: "Quem não arrisca, não petisca", cat: "Proverbs", diff: 5 },
+  { en: "To feel like / to be in the mood for", pt: "Ter vontade de / Apetecer", cat: "Expressions", diff: 4 },
+  { en: "To be about to", pt: "Estar prestes a / Estar a ponto de", cat: "Expressions", diff: 4 },
+  { en: "On purpose", pt: "De propósito / Propositadamente", cat: "Expressions", diff: 4 },
+  { en: "Without a doubt", pt: "Sem dúvida", cat: "Expressions", diff: 4 },
+  { en: "Sustainable development", pt: "Desenvolvimento sustentável", cat: "Society", diff: 4 },
+  { en: "Income inequality", pt: "Desigualdade de rendimentos", cat: "Society", diff: 4 },
+  { en: "Budget deficit", pt: "Défice orçamental", cat: "Economy", diff: 4 },
+  { en: "Civil servants", pt: "Funcionários públicos", cat: "Society", diff: 4 },
+
+  // ── C1 Advanced ──
+  { en: "To be stuck between a rock and a hard place", pt: "Estar entre a espada e a parede", cat: "Idioms", diff: 5 },
+  { en: "Actions speak louder than words", pt: "Palavras leva-as o vento", cat: "Proverbs", diff: 5 },
+  { en: "To beat around the bush", pt: "Andar à volta do assunto / Falar pelos cotovelos", cat: "Idioms", diff: 5 },
+  { en: "To have the gift of the gab", pt: "Ter o dom da palavra", cat: "Idioms", diff: 5 },
+  { en: "To add fuel to the fire", pt: "Deitar achas para a fogueira", cat: "Idioms", diff: 5 },
+  { en: "Turn a blind eye", pt: "Fazer vista grossa", cat: "Idioms", diff: 5 },
+  { en: "To poke your nose in", pt: "Meter o nariz onde não é chamado", cat: "Idioms", diff: 5 },
+  { en: "To sweep under the carpet", pt: "Varrer para debaixo do tapete", cat: "Idioms", diff: 5 },
+  { en: "Nonetheless / Nevertheless", pt: "Não obstante / Todavia", cat: "Formal Discourse", diff: 5 },
+  { en: "By virtue of / By means of", pt: "Por virtude de / Por meio de", cat: "Formal Discourse", diff: 5 },
+  { en: "Notwithstanding", pt: "Não obstante", cat: "Formal Discourse", diff: 5 },
+  { en: "As stipulated", pt: "Conforme estipulado / Nos termos de", cat: "Legal / Formal", diff: 5 },
+  { en: "To be entitled to", pt: "Ter direito a", cat: "Legal / Formal", diff: 5 },
+  { en: "Pursuant to", pt: "Ao abrigo de / Em conformidade com", cat: "Legal / Formal", diff: 5 },
+  { en: "To infer / to deduce", pt: "Depreender / Deduzir", cat: "Academic", diff: 5 },
+  { en: "To highlight / to underscore", pt: "Sublinhar / Salientar", cat: "Academic", diff: 5 },
+  { en: "It should be noted that…", pt: "Importa salientar que… / Cumpre referir que…", cat: "Academic", diff: 5 },
+  { en: "In light of the above", pt: "À luz do exposto", cat: "Academic", diff: 5 },
+  { en: "Counterproductive", pt: "Contraproducente", cat: "Advanced Vocab", diff: 5 },
+  { en: "Groundbreaking", pt: "Pioneiro / Inovador / Revolucionário", cat: "Advanced Vocab", diff: 5 },
+  { en: "Far-reaching", pt: "De grande alcance / Com grande impacto", cat: "Advanced Vocab", diff: 5 },
+  { en: "Overwhelming majority", pt: "Esmagadora maioria", cat: "Advanced Vocab", diff: 5 },
+  { en: "State-of-the-art", pt: "De última geração / De ponta", cat: "Advanced Vocab", diff: 5 },
+
+  // ── C2 Mastery / Near-Native ──
+  { en: "He who has a companion has a treasure (proverb)", pt: "Quem tem um amigo, tem um tesouro", cat: "Proverbs", diff: 6 },
+  { en: "Still waters run deep", pt: "Águas calmas são as mais profundas", cat: "Proverbs", diff: 6 },
+  { en: "Don't count your chickens before they hatch", pt: "Não vendas a pele do urso antes de o matar", cat: "Proverbs", diff: 6 },
+  { en: "The early bird catches the worm", pt: "Deus ajuda quem cedo madruga", cat: "Proverbs", diff: 6 },
+  { en: "That longing / melancholy for something loved and lost", pt: "Saudade", cat: "Untranslatable", diff: 6 },
+  { en: "The pleasure of small things / finding beauty in the ordinary", pt: "Saudosismo", cat: "Untranslatable", diff: 6 },
+  { en: "To feel shame on behalf of another person", pt: "Ter vergonha alheia", cat: "Untranslatable", diff: 6 },
+  { en: "The art of improvising a solution from whatever is available", pt: "Desenrascanço", cat: "Untranslatable", diff: 6 },
+  { en: "To be in a hopeless/messy situation", pt: "Estar numa alhada / Estar numa sarilhos", cat: "Idioms", diff: 6 },
+  { en: "To vanish / disappear without a trace", pt: "Desaparecer como por magia / Sumir-se", cat: "Idioms", diff: 6 },
+  { en: "Formally speaking, the decision is irreversible", pt: "Formalmente falando, a decisão é irreversível", cat: "Formal", diff: 6 },
+  { en: "The proposed measures ought to be re-examined", pt: "As medidas propostas carecem de ser reanalisadas", cat: "Formal", diff: 6 },
+  { en: "The matter warrants further scrutiny", pt: "A questão merece uma análise mais aprofundada", cat: "Academic", diff: 6 },
+  { en: "It would be remiss not to mention…", pt: "Seria uma omissão não mencionar…", cat: "Academic", diff: 6 },
+  { en: "A pivotal / watershed moment", pt: "Um momento decisivo / Uma viragem histórica", cat: "Advanced Vocab", diff: 6 },
+  { en: "To be at a crossroads", pt: "Estar numa encruzilhada", cat: "Expressions", diff: 6 },
+  { en: "Fatalistic acceptance of one's fate", pt: "Fatalismo / Resignação", cat: "Culture", diff: 6 },
+  { en: "Nostalgic longing specific to Portuguese culture", pt: "Saudade (cultural concept)", cat: "Culture", diff: 6 },
+];
+
+// Difficulty colour coding
+const diffColors = {
+  1: '#3ecf8e', // green  — A1
+  2: '#6ee7b7', // light green — A2
+  3: '#fbbf24', // yellow — B1
+  4: '#fb923c', // orange — B2
+  5: '#f87171', // red    — C1
+  6: '#c084fc', // purple — C2
+};
+
+// ══════════════════════════════════════════════
+// FLASHCARD LOGIC
+// ══════════════════════════════════════════════
+let deck = [];
+let cursor = 0;
+let showEnglishFirst = true;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildDeck() {
+  deck = shuffle(cards);
+}
+
+function renderCard() {
+  const card = deck[cursor];
+  const inner = document.getElementById('cardInner');
+  inner.classList.remove('flipped');
+
+  const prompt = showEnglishFirst ? card.en : card.pt;
+  const answer = showEnglishFirst ? card.pt : card.en;
+  const promptLabel = showEnglishFirst ? 'English' : 'Portuguese';
+  const answerLabel = showEnglishFirst ? 'Portuguese' : 'English';
+
+  document.getElementById('frontLabel').textContent = promptLabel;
+  document.getElementById('frontWord').textContent = prompt;
+  document.getElementById('frontCat').textContent = card.cat;
+  document.getElementById('backLabel').textContent = answerLabel;
+  document.getElementById('backWord').textContent = answer;
+  document.getElementById('backHint').textContent = card.cat;
+  document.getElementById('diffDot').style.background = diffColors[card.diff] || '#7a7f9a';
+  document.getElementById('cardCounter').textContent = `Card ${cursor + 1} of ${deck.length}`;
+}
+
+function flipCard() {
+  document.getElementById('cardInner').classList.toggle('flipped');
+}
+
+function nextCard() {
+  cursor = (cursor + 1) % deck.length;
+  renderCard();
+}
+
+function prevCard() {
+  cursor = (cursor - 1 + deck.length) % deck.length;
+  renderCard();
+}
+
+function shuffleCards() {
+  buildDeck();
+  cursor = 0;
+  renderCard();
+}
+
+function toggleLang() {
+  showEnglishFirst = !showEnglishFirst;
+  document.getElementById('langIndicator').textContent = showEnglishFirst
+    ? 'Prompt: English → Portuguese'
+    : 'Prompt: Portuguese → English';
+  renderCard();
+}
+
+// ══════════════════════════════════════════════
+// VERB TENSES DATA
+// ══════════════════════════════════════════════
+const tenses = [
+  {
+    name: 'Presente do Indicativo',
+    subtitle: 'Present Indicative',
+    rows: [['eu','falo'],['tu','falas'],['ele/ela','fala'],['nós','falamos'],['vós','falais'],['eles/elas','falam']],
+    example: '<strong>Falo</strong> português todos os dias. — I speak Portuguese every day.',
+  },
+  {
+    name: 'Pretérito Perfeito Simples',
+    subtitle: 'Simple Past (completed action)',
+    rows: [['eu','falei'],['tu','falaste'],['ele/ela','falou'],['nós','falámos'],['vós','flastes'],['eles/elas','falaram']],
+    example: '<strong>Falei</strong> com ela ontem. — I spoke to her yesterday.',
+  },
+  {
+    name: 'Pretérito Imperfeito',
+    subtitle: 'Imperfect (habitual / ongoing past)',
+    rows: [['eu','falava'],['tu','falavas'],['ele/ela','falava'],['nós','falávamos'],['vós','faláveis'],['eles/elas','falavam']],
+    example: 'Quando era criança, <strong>falava</strong> inglês. — As a child, I used to speak English.',
+  },
+  {
+    name: 'Pretérito Mais-que-Perfeito',
+    subtitle: 'Pluperfect (before another past event)',
+    rows: [['eu','falara'],['tu','falaras'],['ele/ela','falara'],['nós','faláramos'],['vós','falareis'],['eles/elas','falaram']],
+    example: 'Ele já <strong>falara</strong> quando cheguei. — He had already spoken when I arrived.',
+  },
+  {
+    name: 'Futuro Simples',
+    subtitle: 'Future Simple',
+    rows: [['eu','falarei'],['tu','falarás'],['ele/ela','falará'],['nós','falaremos'],['vós','falareis'],['eles/elas','falarão']],
+    example: 'Amanhã <strong>falarei</strong> com o chefe. — Tomorrow I will speak to the boss.',
+  },
+  {
+    name: 'Condicional',
+    subtitle: 'Conditional',
+    rows: [['eu','falaria'],['tu','falarias'],['ele/ela','falaria'],['nós','falaríamos'],['vós','falaríeis'],['eles/elas','falariam']],
+    example: '<strong>Falaria</strong> com ele, mas não sei onde está. — I would speak to him, but I don\'t know where he is.',
+  },
+  {
+    name: 'Conjuntivo Presente',
+    subtitle: 'Present Subjunctive',
+    rows: [['eu','fale'],['tu','fales'],['ele/ela','fale'],['nós','falemos'],['vós','faleis'],['eles/elas','falem']],
+    example: 'Quero que <strong>fales</strong> comigo. — I want you to speak to me.',
+  },
+  {
+    name: 'Conjuntivo Imperfeito',
+    subtitle: 'Imperfect Subjunctive',
+    rows: [['eu','falasse'],['tu','falasses'],['ele/ela','falasse'],['nós','falássemos'],['vós','falásseis'],['eles/elas','falassem']],
+    example: 'Se <strong>falasse</strong> mais devagar… — If I spoke more slowly…',
+  },
+  {
+    name: 'Conjuntivo Futuro',
+    subtitle: 'Future Subjunctive',
+    rows: [['eu','falar'],['tu','falares'],['ele/ela','falar'],['nós','falarmos'],['vós','falardes'],['eles/elas','falarem']],
+    example: 'Quando <strong>falares</strong> com ela, diz-lhe olá. — When you speak to her, say hello.',
+  },
+  {
+    name: 'Infinitivo Pessoal',
+    subtitle: 'Personal Infinitive (unique to Portuguese)',
+    rows: [['eu','falar'],['tu','falares'],['ele/ela','falar'],['nós','falarmos'],['vós','falardes'],['eles/elas','falarem']],
+    example: 'É importante <strong>falarmos</strong> português. — It is important for us to speak Portuguese.',
+  },
+  {
+    name: 'Imperativo',
+    subtitle: 'Imperative',
+    rows: [['(tu)','fala!'],['(você)','fale!'],['(nós)','falemos!'],['(vocês)','falem!']],
+    example: '<strong>Fala</strong> mais alto! — Speak louder!',
+  },
+  {
+    name: 'Perífrases Progressivas',
+    subtitle: 'Progressive constructions (estar a + inf.)',
+    rows: [['eu','estou a falar'],['tu','estás a falar'],['ele/ela','está a falar'],['nós','estamos a falar'],['vós','estais a falar'],['eles/elas','estão a falar']],
+    example: 'Estou <strong>a falar</strong> com ela agora. — I am speaking to her now.',
+  },
+];
+
+function buildTenses() {
+  const grid = document.getElementById('tenseGrid');
+  grid.innerHTML = tenses.map(t => `
+    <div class="tense-card">
+      <h3>${t.name} <em>${t.subtitle}</em></h3>
+      <div class="tense-body">
+        <table class="conj-table">
+          ${t.rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}
+        </table>
+        <div class="tense-example">${t.example}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════════════
+// IRREGULAR VERBS DATA
+// ══════════════════════════════════════════════
+const irregularVerbs = [
+  {
+    inf: 'ser', meaning: 'to be (permanent)',
+    tenses: {
+      'Presente': [['eu','sou'],['tu','és'],['ele','é'],['nós','somos'],['vós','sois'],['eles','são']],
+      'Pret. Perfeito': [['eu','fui'],['tu','foste'],['ele','foi'],['nós','fomos'],['vós','fostes'],['eles','foram']],
+      'Imperfeito': [['eu','era'],['tu','eras'],['ele','era'],['nós','éramos'],['vós','éreis'],['eles','eram']],
+      'Conj. Presente': [['eu','seja'],['tu','sejas'],['ele','seja'],['nós','sejamos'],['vós','sejais'],['eles','sejam']],
+    }
+  },
+  {
+    inf: 'estar', meaning: 'to be (temporary / location)',
+    tenses: {
+      'Presente': [['eu','estou'],['tu','estás'],['ele','está'],['nós','estamos'],['vós','estais'],['eles','estão']],
+      'Pret. Perfeito': [['eu','estive'],['tu','estiveste'],['ele','esteve'],['nós','estivemos'],['vós','estivestes'],['eles','estiveram']],
+      'Imperfeito': [['eu','estava'],['tu','estavas'],['ele','estava'],['nós','estávamos'],['vós','estáveis'],['eles','estavam']],
+      'Conj. Presente': [['eu','esteja'],['tu','estejas'],['ele','esteja'],['nós','estejamos'],['vós','estejais'],['eles','estejam']],
+    }
+  },
+  {
+    inf: 'ter', meaning: 'to have',
+    tenses: {
+      'Presente': [['eu','tenho'],['tu','tens'],['ele','tem'],['nós','temos'],['vós','tendes'],['eles','têm']],
+      'Pret. Perfeito': [['eu','tive'],['tu','tiveste'],['ele','teve'],['nós','tivemos'],['vós','tivestes'],['eles','tiveram']],
+      'Imperfeito': [['eu','tinha'],['tu','tinhas'],['ele','tinha'],['nós','tínhamos'],['vós','tínheis'],['eles','tinham']],
+      'Conj. Presente': [['eu','tenha'],['tu','tenhas'],['ele','tenha'],['nós','tenhamos'],['vós','tenhais'],['eles','tenham']],
+    }
+  },
+  {
+    inf: 'ir', meaning: 'to go',
+    tenses: {
+      'Presente': [['eu','vou'],['tu','vais'],['ele','vai'],['nós','vamos'],['vós','ides'],['eles','vão']],
+      'Pret. Perfeito': [['eu','fui'],['tu','foste'],['ele','foi'],['nós','fomos'],['vós','fostes'],['eles','foram']],
+      'Imperfeito': [['eu','ia'],['tu','ias'],['ele','ia'],['nós','íamos'],['vós','íeis'],['eles','iam']],
+      'Conj. Presente': [['eu','vá'],['tu','vás'],['ele','vá'],['nós','vamos'],['vós','vades'],['eles','vão']],
+    }
+  },
+  {
+    inf: 'fazer', meaning: 'to do / to make',
+    tenses: {
+      'Presente': [['eu','faço'],['tu','fazes'],['ele','faz'],['nós','fazemos'],['vós','fazeis'],['eles','fazem']],
+      'Pret. Perfeito': [['eu','fiz'],['tu','fizeste'],['ele','fez'],['nós','fizemos'],['vós','fizestes'],['eles','fizeram']],
+      'Imperfeito': [['eu','fazia'],['tu','fazias'],['ele','fazia'],['nós','fazíamos'],['vós','fazíeis'],['eles','faziam']],
+      'Conj. Presente': [['eu','faça'],['tu','faças'],['ele','faça'],['nós','façamos'],['vós','façais'],['eles','façam']],
+    }
+  },
+  {
+    inf: 'vir', meaning: 'to come',
+    tenses: {
+      'Presente': [['eu','venho'],['tu','vens'],['ele','vem'],['nós','vimos'],['vós','vindes'],['eles','vêm']],
+      'Pret. Perfeito': [['eu','vim'],['tu','vieste'],['ele','veio'],['nós','viemos'],['vós','viestes'],['eles','vieram']],
+      'Imperfeito': [['eu','vinha'],['tu','vinhas'],['ele','vinha'],['nós','vínhamos'],['vós','vínheis'],['eles','vinham']],
+      'Conj. Presente': [['eu','venha'],['tu','venhas'],['ele','venha'],['nós','venhamos'],['vós','venhais'],['eles','venham']],
+    }
+  },
+  {
+    inf: 'ver', meaning: 'to see',
+    tenses: {
+      'Presente': [['eu','vejo'],['tu','vês'],['ele','vê'],['nós','vemos'],['vós','vedes'],['eles','vêem']],
+      'Pret. Perfeito': [['eu','vi'],['tu','viste'],['ele','viu'],['nós','vimos'],['vós','vistes'],['eles','viram']],
+      'Imperfeito': [['eu','via'],['tu','vias'],['ele','via'],['nós','víamos'],['vós','víeis'],['eles','viam']],
+      'Conj. Presente': [['eu','veja'],['tu','vejas'],['ele','veja'],['nós','vejamos'],['vós','vejais'],['eles','vejam']],
+    }
+  },
+  {
+    inf: 'dar', meaning: 'to give',
+    tenses: {
+      'Presente': [['eu','dou'],['tu','dás'],['ele','dá'],['nós','damos'],['vós','dais'],['eles','dão']],
+      'Pret. Perfeito': [['eu','dei'],['tu','deste'],['ele','deu'],['nós','demos'],['vós','destes'],['eles','deram']],
+      'Imperfeito': [['eu','dava'],['tu','davas'],['ele','dava'],['nós','dávamos'],['vós','dáveis'],['eles','davam']],
+      'Conj. Presente': [['eu','dê'],['tu','dês'],['ele','dê'],['nós','demos'],['vós','deis'],['eles','dêem']],
+    }
+  },
+  {
+    inf: 'saber', meaning: 'to know (facts)',
+    tenses: {
+      'Presente': [['eu','sei'],['tu','sabes'],['ele','sabe'],['nós','sabemos'],['vós','sabeis'],['eles','sabem']],
+      'Pret. Perfeito': [['eu','soube'],['tu','soubeste'],['ele','soube'],['nós','soubemos'],['vós','soubestes'],['eles','souberam']],
+      'Imperfeito': [['eu','sabia'],['tu','sabias'],['ele','sabia'],['nós','sabíamos'],['vós','sabíeis'],['eles','sabiam']],
+      'Conj. Presente': [['eu','saiba'],['tu','saibas'],['ele','saiba'],['nós','saibamos'],['vós','saibais'],['eles','saibam']],
+    }
+  },
+  {
+    inf: 'poder', meaning: 'to be able to / can',
+    tenses: {
+      'Presente': [['eu','posso'],['tu','podes'],['ele','pode'],['nós','podemos'],['vós','podeis'],['eles','podem']],
+      'Pret. Perfeito': [['eu','pude'],['tu','pudeste'],['ele','pôde'],['nós','pudemos'],['vós','pudestes'],['eles','puderam']],
+      'Imperfeito': [['eu','podia'],['tu','podias'],['ele','podia'],['nós','podíamos'],['vós','podíeis'],['eles','podiam']],
+      'Conj. Presente': [['eu','possa'],['tu','possas'],['ele','possa'],['nós','possamos'],['vós','possais'],['eles','possam']],
+    }
+  },
+  {
+    inf: 'querer', meaning: 'to want',
+    tenses: {
+      'Presente': [['eu','quero'],['tu','queres'],['ele','quer'],['nós','queremos'],['vós','quereis'],['eles','querem']],
+      'Pret. Perfeito': [['eu','quis'],['tu','quiseste'],['ele','quis'],['nós','quisemos'],['vós','quisestes'],['eles','quiseram']],
+      'Imperfeito': [['eu','queria'],['tu','querias'],['ele','queria'],['nós','queríamos'],['vós','queríeis'],['eles','queriam']],
+      'Conj. Presente': [['eu','queira'],['tu','queiras'],['ele','queira'],['nós','queiramos'],['vós','queirais'],['eles','queiram']],
+    }
+  },
+  {
+    inf: 'trazer', meaning: 'to bring',
+    tenses: {
+      'Presente': [['eu','trago'],['tu','trazes'],['ele','traz'],['nós','trazemos'],['vós','trazeis'],['eles','trazem']],
+      'Pret. Perfeito': [['eu','trouxe'],['tu','trouxeste'],['ele','trouxe'],['nós','trouxemos'],['vós','trouxestes'],['eles','trouxeram']],
+      'Imperfeito': [['eu','trazia'],['tu','trazias'],['ele','trazia'],['nós','trazíamos'],['vós','trazíeis'],['eles','traziam']],
+      'Conj. Presente': [['eu','traga'],['tu','tragas'],['ele','traga'],['nós','tragamos'],['vós','tragais'],['eles','tragam']],
+    }
+  },
+  {
+    inf: 'pôr', meaning: 'to put / to place',
+    tenses: {
+      'Presente': [['eu','ponho'],['tu','pões'],['ele','põe'],['nós','pomos'],['vós','pondes'],['eles','põem']],
+      'Pret. Perfeito': [['eu','pus'],['tu','puseste'],['ele','pôs'],['nós','pusemos'],['vós','pusestes'],['eles','puseram']],
+      'Imperfeito': [['eu','punha'],['tu','punhas'],['ele','punha'],['nós','púnhamos'],['vós','púnheis'],['eles','punham']],
+      'Conj. Presente': [['eu','ponha'],['tu','ponhas'],['ele','ponha'],['nós','ponhamos'],['vós','ponhais'],['eles','ponham']],
+    }
+  },
+  {
+    inf: 'haver', meaning: 'to have (aux.) / there is/are',
+    tenses: {
+      'Presente': [['eu','hei'],['tu','hás'],['ele','há'],['nós','havemos'],['vós','haveis'],['eles','hão']],
+      'Pret. Perfeito': [['eu','houve'],['(impersonal)','houve'],['',''],['',''],['',''],['','']],
+      'Imperfeito': [['eu','havia'],['tu','havias'],['ele','havia'],['nós','havíamos'],['vós','havíeis'],['eles','haviam']],
+      'Conj. Presente': [['eu','haja'],['tu','hajas'],['ele','haja'],['nós','hajamos'],['vós','hajais'],['eles','hajam']],
+    }
+  },
+];
+
+let activeVerb = null;
+
+function buildIrregular() {
+  const tabs = document.getElementById('verbTabs');
+  const blocks = document.getElementById('verbBlocks');
+
+  tabs.innerHTML = irregularVerbs.map(v => `
+    <button class="verb-tab" onclick="selectVerb('${v.inf}')">${v.inf}</button>
+  `).join('');
+
+  blocks.innerHTML = irregularVerbs.map(v => `
+    <div class="verb-block" id="vb-${v.inf}">
+      <div class="verb-header">
+        <h2>${v.inf}</h2>
+        <span>${v.meaning}</span>
+      </div>
+      <div class="verb-tenses-grid">
+        ${Object.entries(v.tenses).map(([tname, rows]) => `
+          <div class="verb-tense-col">
+            <h4>${tname}</h4>
+            <div class="forms">
+              ${rows.filter(r => r[1]).map(r => `<div><em>${r[0]}</em><span>${r[1]}</span></div>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  selectVerb(irregularVerbs[0].inf);
+}
+
+function selectVerb(inf) {
+  document.querySelectorAll('.verb-tab').forEach(b => b.classList.toggle('active', b.textContent === inf));
+  document.querySelectorAll('.verb-block').forEach(b => b.classList.toggle('visible', b.id === 'vb-' + inf));
+  activeVerb = inf;
+}
+
+function filterVerbs(q) {
+  const val = q.trim().toLowerCase();
+  document.querySelectorAll('.verb-tab').forEach(btn => {
+    btn.style.display = (!val || btn.textContent.includes(val)) ? '' : 'none';
+  });
+  if (val) {
+    const match = irregularVerbs.find(v => v.inf.startsWith(val));
+    if (match) selectVerb(match.inf);
+  }
+}
+
+// ══════════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════════
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+buildDeck();
+renderCard();
+buildTenses();
+buildIrregular();
+</script>
+</body>
+</html>
