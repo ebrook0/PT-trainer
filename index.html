@@ -393,6 +393,29 @@
   }
   .tense-example strong { color: var(--text); font-style: normal; font-weight: 500; }
 
+  .verb-type-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .verb-type-tab {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 11px;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .verb-type-tab:hover:not(.active) { border-color: var(--accent); color: var(--accent); }
+  .verb-type-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
   /* ── IRREGULAR VERBS ── */
   .irr-search { margin-bottom: 20px; }
 
@@ -959,52 +982,97 @@ function prevCard() { cursor = (cursor - 1 + deck.length) % deck.length; renderC
 function shuffleCards() { buildDeck(); cursor = 0; renderCard(); }
 
 // ── VERB TENSES ──
+// Each tense has three verb-type panels: ar (falar), er (comer), ir (partir)
 const tenses = [
-  { name:'Presente do Indicativo', subtitle:'Present Indicative',
-    rows:[['eu','falo'],['tu','falas'],['ele/ela','fala'],['nós','falamos'],['vocês','falam']],
-    example:'<strong>Falo</strong> português todos os dias. — I speak Portuguese every day.' },
-  { name:'Pretérito Perfeito Simples', subtitle:'Simple Past (completed action)',
-    rows:[['eu','falei'],['tu','falaste'],['ele/ela','falou'],['nós','falámos'],['vocês','falaram']],
-    example:'<strong>Falei</strong> com ela ontem. — I spoke to her yesterday.' },
-  { name:'Pretérito Imperfeito', subtitle:'Imperfect (habitual / ongoing past)',
-    rows:[['eu','falava'],['tu','falavas'],['ele/ela','falava'],['nós','falávamos'],['vocês','falavam']],
-    example:'Quando era criança, <strong>falava</strong> inglês. — As a child, I used to speak English.' },
-  { name:'Pretérito Mais-que-Perfeito', subtitle:'Pluperfect (before another past event)',
-    rows:[['eu','falara'],['tu','falaras'],['ele/ela','falara'],['nós','faláramos'],['vocês','falaram']],
-    example:'Ele já <strong>falara</strong> quando cheguei. — He had already spoken when I arrived.' },
-  { name:'Futuro Simples', subtitle:'Future Simple',
-    rows:[['eu','falarei'],['tu','falarás'],['ele/ela','falará'],['nós','falaremos'],['vocês','falarão']],
-    example:'Amanhã <strong>falarei</strong> com o chefe. — Tomorrow I will speak to the boss.' },
-  { name:'Condicional', subtitle:'Conditional',
-    rows:[['eu','falaria'],['tu','falarias'],['ele/ela','falaria'],['nós','falaríamos'],['vocês','falariam']],
-    example:'<strong>Falaria</strong> com ele, mas não sei onde está. — I would speak to him, but I don\'t know where he is.' },
-  { name:'Conjuntivo Presente', subtitle:'Present Subjunctive',
-    rows:[['eu','fale'],['tu','fales'],['ele/ela','fale'],['nós','falemos'],['vocês','falem']],
-    example:'Quero que <strong>fales</strong> comigo. — I want you to speak to me.' },
-  { name:'Conjuntivo Imperfeito', subtitle:'Imperfect Subjunctive',
-    rows:[['eu','falasse'],['tu','falasses'],['ele/ela','falasse'],['nós','falássemos'],['vocês','falassem']],
-    example:'Se <strong>falasse</strong> mais devagar… — If I spoke more slowly…' },
-  { name:'Conjuntivo Futuro', subtitle:'Future Subjunctive',
-    rows:[['eu','falar'],['tu','falares'],['ele/ela','falar'],['nós','falarmos'],['vocês','falarem']],
-    example:'Quando <strong>falares</strong> com ela, diz-lhe olá. — When you speak to her, say hello.' },
-  { name:'Infinitivo Pessoal', subtitle:'Personal Infinitive (unique to Portuguese)',
-    rows:[['eu','falar'],['tu','falares'],['ele/ela','falar'],['nós','falarmos'],['vocês','falarem']],
-    example:'É importante <strong>falarmos</strong> português. — It is important for us to speak Portuguese.' },
-  { name:'Imperativo', subtitle:'Imperative',
-    rows:[['(tu)','fala!'],['(você)','fale!'],['(nós)','falemos!'],['(vocês)','falem!']],
-    example:'<strong>Fala</strong> mais alto! — Speak louder!' },
-  { name:'Perífrases Progressivas', subtitle:'Progressive constructions (estar a + infinitive)',
-    rows:[['eu','estou a falar'],['tu','estás a falar'],['ele/ela','está a falar'],['nós','estamos a falar'],['vocês','estão a falar']],
-    example:'Estou <strong>a falar</strong> com ela agora. — I am speaking to her now.' },
+  { name:'Presente do Indicativo', subtitle:'Present Indicative', verbs:{
+    ar:{ verb:'falar',  meaning:'to speak', rows:[['eu','falo'],['tu','falas'],['ele/ela','fala'],['nós','falamos'],['vocês','falam']], example:'<strong>Falo</strong> português todos os dias. — I speak Portuguese every day.' },
+    er:{ verb:'comer',  meaning:'to eat',   rows:[['eu','como'],['tu','comes'],['ele/ela','come'],['nós','comemos'],['vocês','comem']], example:'<strong>Como</strong> bacalhau ao jantar. — I eat cod for dinner.' },
+    ir:{ verb:'partir', meaning:'to leave', rows:[['eu','parto'],['tu','partes'],['ele/ela','parte'],['nós','partimos'],['vocês','partem']], example:'<strong>Parto</strong> para Lisboa amanhã. — I leave for Lisbon tomorrow.' },
+  }},
+  { name:'Pretérito Perfeito Simples', subtitle:'Simple Past (completed action)', verbs:{
+    ar:{ verb:'falar',  meaning:'to speak', rows:[['eu','falei'],['tu','falaste'],['ele/ela','falou'],['nós','falámos'],['vocês','falaram']], example:'<strong>Falei</strong> com ela ontem. — I spoke to her yesterday.' },
+    er:{ verb:'comer',  meaning:'to eat',   rows:[['eu','comi'],['tu','comeste'],['ele/ela','comeu'],['nós','comemos'],['vocês','comeram']], example:'<strong>Comi</strong> um pastel de nata. — I ate a custard tart.' },
+    ir:{ verb:'partir', meaning:'to leave', rows:[['eu','parti'],['tu','partiste'],['ele/ela','partiu'],['nós','partimos'],['vocês','partiram']], example:'<strong>Parti</strong> cedo de manhã. — I left early in the morning.' },
+  }},
+  { name:'Pretérito Imperfeito', subtitle:'Imperfect (habitual / ongoing past)', verbs:{
+    ar:{ verb:'falar',  meaning:'to speak', rows:[['eu','falava'],['tu','falavas'],['ele/ela','falava'],['nós','falávamos'],['vocês','falavam']], example:'Quando era criança, <strong>falava</strong> inglês. — As a child, I used to speak English.' },
+    er:{ verb:'comer',  meaning:'to eat',   rows:[['eu','comia'],['tu','comias'],['ele/ela','comia'],['nós','comíamos'],['vocês','comiam']], example:'Em criança, <strong>comia</strong> sopa todos os dias. — As a child, I used to eat soup every day.' },
+    ir:{ verb:'partir', meaning:'to leave', rows:[['eu','partia'],['tu','partias'],['ele/ela','partia'],['nós','partíamos'],['vocês','partiam']], example:'<strong>Partia</strong> sempre às oito da manhã. — I always used to leave at eight in the morning.' },
+  }},
+  { name:'Pretérito Mais-que-Perfeito', subtitle:'Pluperfect (before another past event)', verbs:{
+    ar:{ verb:'falar',  meaning:'to speak', rows:[['eu','falara'],['tu','falaras'],['ele/ela','falara'],['nós','faláramos'],['vocês','falaram']], example:'Ele já <strong>falara</strong> quando cheguei. — He had already spoken when I arrived.' },
+    er:{ verb:'comer',  meaning:'to eat',   rows:[['eu','comera'],['tu','comeras'],['ele/ela','comera'],['nós','comêramos'],['vocês','comeram']], example:'Já <strong>comera</strong> quando chegaram. — I had already eaten when they arrived.' },
+    ir:{ verb:'partir', meaning:'to leave', rows:[['eu','partira'],['tu','partiras'],['ele/ela','partira'],['nós','partíramos'],['vocês','partiram']], example:'Ela já <strong>partira</strong> antes do almoço. — She had already left before lunch.' },
+  }},
+  { name:'Futuro Simples', subtitle:'Future Simple', verbs:{
+    ar:{ verb:'falar',  meaning:'to speak', rows:[['eu','falarei'],['tu','falarás'],['ele/ela','falará'],['nós','falaremos'],['vocês','falarão']], example:'Amanhã <strong>falarei</strong> com o chefe. — Tomorrow I will speak to the boss.' },
+    er:{ verb:'comer',  meaning:'to eat',   rows:[['eu','comerei'],['tu','comerás'],['ele/ela','comerá'],['nós','comeremos'],['vocês','comerão']], example:'<strong>Comerei</strong> fora esta noite. — I will eat out tonight.' },
+    ir:{ verb:'partir', meaning:'to leave', rows:[['eu','partirei'],['tu','partirás'],['ele/ela','partirá'],['nós','partiremos'],['vocês','partirão']], example:'<strong>Partirei</strong> de manhã cedo. — I will leave early in the morning.' },
+  }},
+  { name:'Condicional', subtitle:'Conditional', verbs:{
+    ar:{ verb:'falar',  meaning:'to speak', rows:[['eu','falaria'],['tu','falarias'],['ele/ela','falaria'],['nós','falaríamos'],['vocês','falariam']], example:'<strong>Falaria</strong> com ele, mas não sei onde está. — I would speak to him, but I don\'t know where he is.' },
+    er:{ verb:'comer',  meaning:'to eat',   rows:[['eu','comeria'],['tu','comerias'],['ele/ela','comeria'],['nós','comeríamos'],['vocês','comeriam']], example:'<strong>Comeria</strong> mais, mas estou cheio/a. — I would eat more, but I am full.' },
+    ir:{ verb:'partir', meaning:'to leave', rows:[['eu','partiria'],['tu','partirias'],['ele/ela','partiria'],['nós','partiríamos'],['vocês','partiriam']], example:'<strong>Partiria</strong> mais cedo se pudesse. — I would leave earlier if I could.' },
+  }},
+  { name:'Conjuntivo Presente', subtitle:'Present Subjunctive', verbs:{
+    ar:{ verb:'falar',  meaning:'to speak', rows:[['eu','fale'],['tu','fales'],['ele/ela','fale'],['nós','falemos'],['vocês','falem']], example:'Quero que <strong>fales</strong> comigo. — I want you to speak to me.' },
+    er:{ verb:'comer',  meaning:'to eat',   rows:[['eu','coma'],['tu','comas'],['ele/ela','coma'],['nós','comamos'],['vocês','comam']], example:'Espero que <strong>comas</strong> tudo. — I hope you eat everything.' },
+    ir:{ verb:'partir', meaning:'to leave', rows:[['eu','parta'],['tu','partas'],['ele/ela','parta'],['nós','partamos'],['vocês','partam']], example:'É importante que <strong>partas</strong> a tempo. — It is important that you leave on time.' },
+  }},
+  { name:'Conjuntivo Imperfeito', subtitle:'Imperfect Subjunctive', verbs:{
+    ar:{ verb:'falar',  meaning:'to speak', rows:[['eu','falasse'],['tu','falasses'],['ele/ela','falasse'],['nós','falássemos'],['vocês','falassem']], example:'Se <strong>falasse</strong> mais devagar… — If I spoke more slowly…' },
+    er:{ verb:'comer',  meaning:'to eat',   rows:[['eu','comesse'],['tu','comesses'],['ele/ela','comesse'],['nós','comêssemos'],['vocês','comessem']], example:'Se <strong>comesse</strong> menos… — If I ate less…' },
+    ir:{ verb:'partir', meaning:'to leave', rows:[['eu','partisse'],['tu','partisses'],['ele/ela','partisse'],['nós','partíssemos'],['vocês','partissem']], example:'Se <strong>partisses</strong> mais cedo… — If you left earlier…' },
+  }},
+  { name:'Conjuntivo Futuro', subtitle:'Future Subjunctive', verbs:{
+    ar:{ verb:'falar',  meaning:'to speak', rows:[['eu','falar'],['tu','falares'],['ele/ela','falar'],['nós','falarmos'],['vocês','falarem']], example:'Quando <strong>falares</strong> com ela, diz-lhe olá. — When you speak to her, say hello.' },
+    er:{ verb:'comer',  meaning:'to eat',   rows:[['eu','comer'],['tu','comeres'],['ele/ela','comer'],['nós','comermos'],['vocês','comerem']], example:'Quando <strong>comeres</strong>, avisa-me. — When you eat, let me know.' },
+    ir:{ verb:'partir', meaning:'to leave', rows:[['eu','partir'],['tu','partires'],['ele/ela','partir'],['nós','partirmos'],['vocês','partirem']], example:'Quando <strong>partirmos</strong>, liga-me. — When we leave, call me.' },
+  }},
+  { name:'Infinitivo Pessoal', subtitle:'Personal Infinitive (unique to Portuguese)', verbs:{
+    ar:{ verb:'falar',  meaning:'to speak', rows:[['eu','falar'],['tu','falares'],['ele/ela','falar'],['nós','falarmos'],['vocês','falarem']], example:'É importante <strong>falarmos</strong> português. — It is important for us to speak Portuguese.' },
+    er:{ verb:'comer',  meaning:'to eat',   rows:[['eu','comer'],['tu','comeres'],['ele/ela','comer'],['nós','comermos'],['vocês','comerem']], example:'Antes de <strong>comermos</strong>, lavamos as mãos. — Before eating, we wash our hands.' },
+    ir:{ verb:'partir', meaning:'to leave', rows:[['eu','partir'],['tu','partires'],['ele/ela','partir'],['nós','partirmos'],['vocês','partirem']], example:'É hora de <strong>partirmos</strong>. — It is time for us to leave.' },
+  }},
+  { name:'Imperativo', subtitle:'Imperative', verbs:{
+    ar:{ verb:'falar',  meaning:'to speak', rows:[['(tu)','fala!'],['(você)','fale!'],['(nós)','falemos!'],['(vocês)','falem!']], example:'<strong>Fala</strong> mais alto! — Speak louder!' },
+    er:{ verb:'comer',  meaning:'to eat',   rows:[['(tu)','come!'],['(você)','coma!'],['(nós)','comamos!'],['(vocês)','comam!']], example:'<strong>Come</strong> tudo! — Eat everything!' },
+    ir:{ verb:'partir', meaning:'to leave', rows:[['(tu)','parte!'],['(você)','parta!'],['(nós)','partamos!'],['(vocês)','partam!']], example:'<strong>Parte</strong> já! — Leave now!' },
+  }},
+  { name:'Perífrases Progressivas', subtitle:'Progressive constructions (estar a + infinitive)', verbs:{
+    ar:{ verb:'falar',  meaning:'to speak', rows:[['eu','estou a falar'],['tu','estás a falar'],['ele/ela','está a falar'],['nós','estamos a falar'],['vocês','estão a falar']], example:'Estou <strong>a falar</strong> com ela agora. — I am speaking to her now.' },
+    er:{ verb:'comer',  meaning:'to eat',   rows:[['eu','estou a comer'],['tu','estás a comer'],['ele/ela','está a comer'],['nós','estamos a comer'],['vocês','estão a comer']], example:'Estou <strong>a comer</strong> o jantar. — I am eating dinner.' },
+    ir:{ verb:'partir', meaning:'to leave', rows:[['eu','estou a partir'],['tu','estás a partir'],['ele/ela','está a partir'],['nós','estamos a partir'],['vocês','estão a partir']], example:'Estamos <strong>a partir</strong> agora. — We are leaving now.' },
+  }},
 ];
 
+function switchVerbType(btn, cardId, type) {
+  btn.closest('.tense-card').querySelectorAll('.verb-type-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  ['ar','er','ir'].forEach(t => {
+    var el = document.getElementById(cardId + '-' + t);
+    if (el) el.style.display = t === type ? 'block' : 'none';
+  });
+}
+
 function buildTenses() {
-  document.getElementById('tenseGrid').innerHTML = tenses.map(t =>
-    '<div class="tense-card"><h3>' + t.name + ' <em>' + t.subtitle + '</em></h3>' +
-    '<div class="tense-body"><table class="conj-table">' +
-    t.rows.map(r => '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>').join('') +
-    '</table><div class="tense-example">' + t.example + '</div></div></div>'
-  ).join('');
+  document.getElementById('tenseGrid').innerHTML = tenses.map(function(t, i) {
+    var cardId = 'tc' + i;
+    var tabsHtml = ['ar','er','ir'].map(function(type, j) {
+      var v = t.verbs[type];
+      return '<button class="verb-type-tab' + (j === 0 ? ' active' : '') + '" onclick="switchVerbType(this,\'' + cardId + '\',\'' + type + '\')">-' + type + ' · ' + v.verb + '</button>';
+    }).join('');
+    var panelsHtml = ['ar','er','ir'].map(function(type, j) {
+      var v = t.verbs[type];
+      return '<div class="tense-body" id="' + cardId + '-' + type + '"' + (j > 0 ? ' style="display:none"' : '') + '>' +
+        '<div style="font-size:0.72rem;color:var(--muted);margin-bottom:8px;font-style:italic">' + v.verb + ' — ' + v.meaning + '</div>' +
+        '<table class="conj-table">' +
+        v.rows.map(function(r){ return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>'; }).join('') +
+        '</table><div class="tense-example">' + v.example + '</div></div>';
+    }).join('');
+    return '<div class="tense-card"><h3>' + t.name + ' <em>' + t.subtitle + '</em></h3>' +
+      '<div class="verb-type-tabs">' + tabsHtml + '</div>' + panelsHtml + '</div>';
+  }).join('');
 }
 
 // ── IRREGULAR VERBS ──
