@@ -1201,6 +1201,34 @@ const diffColors = { 1:'#22c55e', 2:'#84cc16', 3:'#f59e0b', 4:'#f97316', 5:'#ef4
 const hasSpeech = 'speechSynthesis' in window;
 let audioEnabled = localStorage.getItem('ptAudio') === 'true';
 let speakTimer = null;
+let enVoice = null;   // explicitly selected English male voice
+let ptVoice = null;   // explicitly selected Portuguese voice
+
+function pickVoices() {
+  if (!hasSpeech) return;
+  var all = window.speechSynthesis.getVoices();
+  if (!all.length) return;
+
+  // English: prefer explicit male voice, then known male names, then en-GB, then en-US
+  enVoice =
+    all.find(function(v){ return v.lang.startsWith('en') && /male/i.test(v.name); }) ||
+    all.find(function(v){ return /\b(Daniel|Arthur|Aaron|Fred|Tom|Oliver|Google UK English Male)\b/i.test(v.name) && v.lang.startsWith('en'); }) ||
+    all.find(function(v){ return v.lang === 'en-GB'; }) ||
+    all.find(function(v){ return v.lang === 'en-US'; }) ||
+    all.find(function(v){ return v.lang.startsWith('en'); }) ||
+    null;
+
+  // Portuguese: prefer pt-PT (European), fall back to any pt-*
+  ptVoice =
+    all.find(function(v){ return v.lang === 'pt-PT'; }) ||
+    all.find(function(v){ return v.lang.startsWith('pt'); }) ||
+    null;
+}
+
+if (hasSpeech) {
+  window.speechSynthesis.onvoiceschanged = pickVoices;
+  pickVoices(); // already populated on desktop; async on mobile
+}
 
 function updateAudioBtn() {
   var btn = document.getElementById('audioBtn');
@@ -1243,20 +1271,28 @@ function speakSide(isBack) {
   if (!audioEnabled || !hasSpeech || !deck.length) return;
   var card = deck[cursor];
   var showEn = card._showEn;
-  var text, lang;
-  if (isBack) {
-    text = showEn ? card.pt : card.en;
-    lang = showEn ? 'pt-PT' : 'en-GB';
-  } else {
-    text = showEn ? card.en : card.pt;
-    lang = showEn ? 'en-GB' : 'pt-PT';
-  }
+  // work out whether the side we're about to speak is English or Portuguese
+  var isEnglish = isBack ? !showEn : showEn;
+  var text      = isBack ? (showEn ? card.pt : card.en)
+                         : (showEn ? card.en : card.pt);
+
   window.speechSynthesis.cancel();
   clearTimeout(speakTimer);
-  // Small delay so the card has finished rendering before speaking
   speakTimer = setTimeout(function() {
+    // Re-run voice pick in case voices loaded after page init (common on iOS)
+    if (!enVoice || !ptVoice) pickVoices();
+
     var utt = new SpeechSynthesisUtterance(cleanForSpeech(text));
-    utt.lang = lang;
+    if (isEnglish && enVoice) {
+      utt.voice = enVoice;
+      utt.lang  = enVoice.lang;
+    } else if (!isEnglish && ptVoice) {
+      utt.voice = ptVoice;
+      utt.lang  = ptVoice.lang;
+    } else {
+      // fallback to lang code only if no voice object was found
+      utt.lang = isEnglish ? 'en-GB' : 'pt-PT';
+    }
     utt.rate = 0.88;
     utt.onstart = function() { setAudioIndicator(true); };
     utt.onend   = function() { setAudioIndicator(false); };
