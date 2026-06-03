@@ -114,6 +114,50 @@
   .mode-btn:hover { border-color: var(--accent); color: var(--accent); }
   .mode-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 
+  .audio-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 7px 14px;
+    transition: all 0.15s;
+    box-shadow: var(--shadow);
+    margin-left: 6px;
+  }
+  .audio-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .audio-btn.on { background: #ecfdf5; border-color: var(--accent); color: var(--accent); }
+
+  .audio-speaking {
+    position: absolute;
+    bottom: 14px;
+    left: 16px;
+    display: flex;
+    gap: 3px;
+    align-items: flex-end;
+    height: 16px;
+  }
+  .audio-speaking span {
+    display: block;
+    width: 3px;
+    border-radius: 2px;
+    background: var(--accent);
+    animation: audioBar 0.8s ease-in-out infinite;
+  }
+  .audio-speaking span:nth-child(1) { height: 6px;  animation-delay: 0s; }
+  .audio-speaking span:nth-child(2) { height: 12px; animation-delay: 0.15s; }
+  .audio-speaking span:nth-child(3) { height: 8px;  animation-delay: 0.3s; }
+  .audio-speaking span:nth-child(4) { height: 14px; animation-delay: 0.1s; }
+  .audio-speaking span:nth-child(5) { height: 5px;  animation-delay: 0.25s; }
+  .audio-speaking.hidden { display: none; }
+
+  @keyframes audioBar {
+    0%, 100% { transform: scaleY(0.4); opacity: 0.6; }
+    50%       { transform: scaleY(1);   opacity: 1; }
+  }
+
   .card-counter { margin-left: auto; font-size: 0.78rem; color: var(--muted); }
 
   .card-scene {
@@ -526,6 +570,7 @@
       <button class="mode-btn active" id="modeRandom" onclick="setMode('random',this)">Random</button>
       <button class="mode-btn" id="modeEN"     onclick="setMode('en',this)">EN &#8594; PT</button>
       <button class="mode-btn" id="modePT"     onclick="setMode('pt',this)">PT &#8594; EN</button>
+      <button class="audio-btn" id="audioBtn"  onclick="toggleAudio()">&#128263; Audio</button>
       <span class="card-counter" id="cardCounter">Card 1</span>
     </div>
 
@@ -539,6 +584,9 @@
           <div class="card-hint">Click to reveal</div>
           <div class="card-category" id="frontCat"></div>
           <button class="save-btn" id="saveBtn" onclick="toggleSave(event)" title="Save card">&#9734;</button>
+          <div class="audio-speaking hidden" id="audioIndicator">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
         </div>
         <div class="card-face card-back">
           <div class="card-label" id="backLabel">Portuguese</div>
@@ -996,6 +1044,74 @@ const cards = [
 
 const diffColors = { 1:'#22c55e', 2:'#84cc16', 3:'#f59e0b', 4:'#f97316', 5:'#ef4444', 6:'#a855f7' };
 
+// ── AUDIO ──
+const hasSpeech = 'speechSynthesis' in window;
+let audioEnabled = localStorage.getItem('ptAudio') === 'true';
+let speakTimer = null;
+
+function updateAudioBtn() {
+  var btn = document.getElementById('audioBtn');
+  if (!btn) return;
+  if (audioEnabled) {
+    btn.innerHTML = '&#128266; Audio';
+    btn.classList.add('on');
+  } else {
+    btn.innerHTML = '&#128263; Audio';
+    btn.classList.remove('on');
+    setAudioIndicator(false);
+  }
+}
+
+function toggleAudio() {
+  if (!hasSpeech) { alert('Sorry, your browser does not support text-to-speech.'); return; }
+  audioEnabled = !audioEnabled;
+  localStorage.setItem('ptAudio', audioEnabled);
+  updateAudioBtn();
+  if (audioEnabled) speakSide(false);
+  else window.speechSynthesis.cancel();
+}
+
+function cleanForSpeech(text) {
+  return text
+    .split(' / ')[0]
+    .split(' — ')[0]
+    .replace(/\+.*$/g, '')
+    .replace(/\([^)]*\)/g, '')
+    .replace(/…/g, '')
+    .trim();
+}
+
+function setAudioIndicator(show) {
+  var el = document.getElementById('audioIndicator');
+  if (el) el.classList.toggle('hidden', !show);
+}
+
+function speakSide(isBack) {
+  if (!audioEnabled || !hasSpeech || !deck.length) return;
+  var card = deck[cursor];
+  var showEn = card._showEn;
+  var text, lang;
+  if (isBack) {
+    text = showEn ? card.pt : card.en;
+    lang = showEn ? 'pt-PT' : 'en-GB';
+  } else {
+    text = showEn ? card.en : card.pt;
+    lang = showEn ? 'en-GB' : 'pt-PT';
+  }
+  window.speechSynthesis.cancel();
+  clearTimeout(speakTimer);
+  // Small delay so the card has finished rendering before speaking
+  speakTimer = setTimeout(function() {
+    var utt = new SpeechSynthesisUtterance(cleanForSpeech(text));
+    utt.lang = lang;
+    utt.rate = 0.88;
+    utt.onstart = function() { setAudioIndicator(true); };
+    utt.onend   = function() { setAudioIndicator(false); };
+    utt.onerror = function() { setAudioIndicator(false); };
+    window.speechSynthesis.speak(utt);
+  }, 120);
+}
+
 // ── DIRECTION MODE ──
 let dirMode = 'random'; // 'random' | 'en' | 'pt'
 
@@ -1134,9 +1250,14 @@ function renderCard() {
   }
 
   updateSaveBtn(card);
+  speakSide(false); // speak the prompt side on every new card
 }
 
-function flipCard() { document.getElementById('cardInner').classList.toggle('flipped'); }
+function flipCard() {
+  var inner = document.getElementById('cardInner');
+  inner.classList.toggle('flipped');
+  speakSide(inner.classList.contains('flipped'));
+}
 function nextCard() { cursor = (cursor + 1) % deck.length; renderCard(); }
 function prevCard() { cursor = (cursor - 1 + deck.length) % deck.length; renderCard(); }
 function shuffleCards() { buildDeck(); cursor = 0; renderCard(); }
@@ -1404,7 +1525,7 @@ function showSection(id, btn) {
   btn.classList.add('active');
 }
 
-buildDeck(); renderCard(); buildTenses(); buildIrregular(); renderSavedList();
+buildDeck(); renderCard(); buildTenses(); buildIrregular(); renderSavedList(); updateAudioBtn();
 </script>
 </body>
 </html>
