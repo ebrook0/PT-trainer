@@ -241,6 +241,20 @@
 
   .card-hint { font-size: 0.78rem; color: var(--muted); }
 
+  .card-note {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-align: center;
+    max-width: 90%;
+    line-height: 1.55;
+    border-top: 1px solid rgba(22,163,74,.15);
+    padding-top: 8px;
+    font-style: italic;
+    display: none;
+  }
+  .card-note.show { display: block; }
+  .card-note b { color: #374151; font-style: normal; }
+
   .card-category {
     font-size: 0.68rem;
     padding: 3px 10px;
@@ -592,6 +606,7 @@
           <div class="card-label" id="backLabel">Portuguese</div>
           <div class="card-word" id="backWord"></div>
           <div class="card-hint" id="backHint"></div>
+          <div class="card-note" id="cardNote"></div>
         </div>
       </div>
     </div>
@@ -1032,14 +1047,22 @@ const cards = [
   { en:"Fingers crossed!",              pt:"Os dedos cruzados! / Tomara!",        cat:"Conversation",diff:2 },
 
   // Idioms (kept well under 5% of total cards)
-  { en:"Every cloud has a silver lining", pt:"Não há mal que sempre dure",        cat:"Idioms",diff:4 },
-  { en:"Turn a blind eye",               pt:"Fazer vista grossa",                cat:"Idioms",diff:5 },
-  { en:"Add fuel to the fire",           pt:"Deitar achas para a fogueira",      cat:"Idioms",diff:5 },
-  { en:"Actions speak louder than words",pt:"Palavras leva-as o vento",          cat:"Idioms",diff:5 },
-  { en:"Don't count your chickens before they hatch", pt:"Não vendas a pele do urso antes de o matar", cat:"Idioms",diff:5 },
-  { en:"To call a spade a spade",        pt:"Chamar as coisas pelo nome",        cat:"Idioms",diff:4 },
-  { en:"To turn a deaf ear",             pt:"Fazer ouvidos moucos",              cat:"Idioms",diff:5 },
-  { en:"Once in a blue moon",            pt:"De vez em longe em longe / Raramente", cat:"Idioms",diff:4 },
+  { en:"Every cloud has a silver lining", pt:"Não há mal que sempre dure", cat:"Idioms", diff:4,
+    note:'<b>Literal:</b> "There is no evil that lasts forever." Used to comfort someone going through a hard time — things will eventually get better.' },
+  { en:"Turn a blind eye", pt:"Fazer vista grossa", cat:"Idioms", diff:5,
+    note:'<b>Literal:</b> "To make coarse eyes." Used when someone deliberately ignores wrongdoing — e.g. a manager who notices misconduct but says nothing.' },
+  { en:"Add fuel to the fire", pt:"Deitar achas para a fogueira", cat:"Idioms", diff:5,
+    note:'<b>Literal:</b> "To throw logs onto the bonfire." Used when someone makes a tense situation even worse — e.g. joining an argument and inflaming both sides.' },
+  { en:"Actions speak louder than words", pt:"Palavras leva-as o vento", cat:"Idioms", diff:5,
+    note:'<b>Literal:</b> "Words are carried away by the wind." Used to remind someone that deeds matter more than promises — e.g. someone who keeps saying they\'ll change but never does.' },
+  { en:"Don't count your chickens before they hatch", pt:"Não vendas a pele do urso antes de o matar", cat:"Idioms", diff:5,
+    note:'<b>Literal:</b> "Don\'t sell the bear\'s skin before you\'ve killed it." Used to warn against celebrating or depending on something that hasn\'t happened yet.' },
+  { en:"To call a spade a spade", pt:"Chamar as coisas pelo nome", cat:"Idioms", diff:4,
+    note:'<b>Literal:</b> "To call things by their name." Used when someone speaks bluntly and directly rather than using evasive or diplomatic language.' },
+  { en:"To turn a deaf ear", pt:"Fazer ouvidos moucos", cat:"Idioms", diff:5,
+    note:'<b>Literal:</b> "To make mute/deaf ears." Used when someone deliberately ignores a complaint or request — e.g. a landlord who ignores repair requests.' },
+  { en:"Once in a blue moon", pt:"De vez em longe em longe", cat:"Idioms", diff:4,
+    note:'<b>Literal:</b> "From far to far." Used to describe something that happens very rarely — e.g. "He only visits once in a blue moon."' },
 ];
 
 const diffColors = { 1:'#22c55e', 2:'#84cc16', 3:'#f59e0b', 4:'#f97316', 5:'#ef4444', 6:'#a855f7' };
@@ -1249,8 +1272,18 @@ function renderCard() {
     badge.className = 'register-badge';
   }
 
+  // idiom note on back face
+  var noteEl = document.getElementById('cardNote');
+  if (card.note) {
+    noteEl.innerHTML = card.note;
+    noteEl.classList.add('show');
+  } else {
+    noteEl.innerHTML = '';
+    noteEl.classList.remove('show');
+  }
+
   updateSaveBtn(card);
-  speakSide(false); // speak the prompt side on every new card
+  speakSide(false);
 }
 
 function flipCard() {
